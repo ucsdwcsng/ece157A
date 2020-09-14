@@ -1,3 +1,6 @@
-cd oot/gr-wes/build/
+oot/gr-wes/build/
 .CMakeLists.txt
 .pyc
+oot/gr-wes/swig/
+oot/gr-wes/cmake/
+
