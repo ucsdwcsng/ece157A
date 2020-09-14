@@ -19,6 +19,5 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    wes_square_ff.block.yml
-    wes_wes_costas_cc.block.yml DESTINATION share/gnuradio/grc/blocks
+    wes_costas_cc.block.yml DESTINATION share/gnuradio/grc/blocks
 )

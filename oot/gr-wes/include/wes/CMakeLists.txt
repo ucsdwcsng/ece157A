@@ -23,6 +23,5 @@
 ########################################################################
 install(FILES
     api.h
-    square_ff.h
-    wes_costas_cc.h DESTINATION include/wes
+    costas_cc.h DESTINATION include/wes
 )

@@ -42,6 +42,7 @@ from math import pi
 import epy_module_0  # embedded python module
 import iio
 import numpy as np
+import wes
 from gnuradio import qtgui
 
 class lab3(gr.top_block, Qt.QWidget):
@@ -84,8 +85,8 @@ class lab3(gr.top_block, Qt.QWidget):
         self.std_dev = std_dev = 0.01
         self.sps = sps = 8
         self.samp_rate = samp_rate = 1000
+        self.nat_freq = nat_freq = 10000
         self.lw = lw = 2
-        self.loop_bw = loop_bw = 6.28/100
         self.gain_ = gain_ = 0.5
         self.freqc_ = freqc_ = freqc
         self.fps = fps = 30
@@ -126,9 +127,9 @@ class lab3(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._loop_bw_range = Range(0.01, 1, 0.01, 6.28/100, 200)
-        self._loop_bw_win = RangeWidget(self._loop_bw_range, self.set_loop_bw, 'Loop Bandwidth', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._loop_bw_win, 13, 1, 1, 1)
+        self._nat_freq_range = Range(0, 100e3, 1, 10000, 200)
+        self._nat_freq_win = RangeWidget(self._nat_freq_range, self.set_nat_freq, 'Natural Freq (Hz)', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._nat_freq_win, 13, 1, 1, 1)
         for r in range(13, 14):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(1, 2):
@@ -183,7 +184,8 @@ class lab3(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.qtgui_time_sink_x_0_0 = qtgui.time_sink_f(
+        self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), 0.707, 0)
+        self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
             1024, #size
             samp_rate, #samp_rate
             "", #name
@@ -217,9 +219,12 @@ class lab3(gr.top_block, Qt.QWidget):
             -1, -1, -1, -1, -1]
 
 
-        for i in range(1):
+        for i in range(2):
             if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
+                if (i % 2 == 0):
+                    self.qtgui_time_sink_x_0_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
+                else:
+                    self.qtgui_time_sink_x_0_0.set_line_label(i, "Im{{Data {0}}}".format(i/2))
             else:
                 self.qtgui_time_sink_x_0_0.set_line_label(i, labels[i])
             self.qtgui_time_sink_x_0_0.set_line_width(i, widths[i])
@@ -287,12 +292,13 @@ class lab3(gr.top_block, Qt.QWidget):
         self.iio_pluto_sink_0 = iio.pluto_sink(epy_module_0.TX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, False, 10.0, '', True)
         self.digital_chunks_to_symbols_xx_1_0 = digital.chunks_to_symbols_bc(const_qpsk.points(), 1)
         self.digital_chunks_to_symbols_xx_1 = digital.chunks_to_symbols_bc(const_bpsk.points(), 1)
-        self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_float * 1, False)
+        self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0.set_single_key("")
         self.blocks_selector_0_0 = blocks.selector(gr.sizeof_gr_complex*1,bSignal,0)
         self.blocks_selector_0_0.set_enabled(True)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
-        self.blocks_multiply_const_vxx_2 = blocks.multiply_const_ff(samp_rate*1000/6.28)
+        self.blocks_multiply_const_vxx_2 = blocks.multiply_const_cc(1/6.28*samp_rate*1000)
         self.blocks_multiply_const_vxx_1 = blocks.multiply_const_cc(0)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(gain_ )
         self.blocks_add_xx_0 = blocks.add_vcc(1)
@@ -329,7 +335,6 @@ class lab3(gr.top_block, Qt.QWidget):
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate*1000, analog.GR_COS_WAVE, fo, 1, 0, 0)
         self.analog_random_source_x_0_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 4, 8192))), True)
         self.analog_random_source_x_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 2, 8192))), True)
-        self.analog_pll_freqdet_cf_0 = analog.pll_freqdet_cf(loop_bw, 50000, -50000)
         self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, std_dev, 0)
         self.analog_agc_xx_0 = analog.agc_cc(1e-4, 1.0, 1.0)
         self.analog_agc_xx_0.set_max_gain(65536)
@@ -339,10 +344,9 @@ class lab3(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_agc_xx_0, 0), (self.analog_pll_freqdet_cf_0, 0))
         self.connect((self.analog_agc_xx_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.analog_agc_xx_0, 0), (self.wes_costas_cc_0, 0))
         self.connect((self.analog_noise_source_x_0, 0), (self.blocks_add_xx_0, 1))
-        self.connect((self.analog_pll_freqdet_cf_0, 0), (self.blocks_tag_gate_0, 0))
         self.connect((self.analog_random_source_x_0, 0), (self.digital_chunks_to_symbols_xx_1, 0))
         self.connect((self.analog_random_source_x_0_0, 0), (self.digital_chunks_to_symbols_xx_1_0, 0))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
@@ -360,6 +364,8 @@ class lab3(gr.top_block, Qt.QWidget):
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_multiply_const_vxx_1, 0))
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_selector_0_0, 1))
         self.connect((self.interp_fir_filter_xxx_1_0_0, 0), (self.blocks_selector_0_0, 2))
+        self.connect((self.wes_costas_cc_0, 0), (self.blocks_null_sink_0, 0))
+        self.connect((self.wes_costas_cc_0, 1), (self.blocks_tag_gate_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "lab3")
@@ -392,24 +398,23 @@ class lab3(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate*1000)
-        self.blocks_multiply_const_vxx_2.set_k(self.samp_rate*1000/6.28)
+        self.blocks_multiply_const_vxx_2.set_k(1/6.28*self.samp_rate*1000)
         self.iio_pluto_sink_0.set_params(int(self.freqc_*1e6), int(self.samp_rate*1000), 20000000, 10.0, '', True)
         self.iio_pluto_source_0.set_params(int(self.freqc_*1e6), int(self.samp_rate*1000), 20000000, True, True, True, 'manual', 32, '', True)
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate*1e3)
         self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
+
+    def get_nat_freq(self):
+        return self.nat_freq
+
+    def set_nat_freq(self, nat_freq):
+        self.nat_freq = nat_freq
 
     def get_lw(self):
         return self.lw
 
     def set_lw(self, lw):
         self.lw = lw
-
-    def get_loop_bw(self):
-        return self.loop_bw
-
-    def set_loop_bw(self, loop_bw):
-        self.loop_bw = loop_bw
-        self.analog_pll_freqdet_cf_0.set_loop_bandwidth(self.loop_bw)
 
     def get_gain_(self):
         return self.gain_

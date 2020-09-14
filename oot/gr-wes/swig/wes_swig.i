@@ -8,11 +8,8 @@
 %include "wes_swig_doc.i"
 
 %{
-#include "wes/square_ff.h"
-#include "wes/wes_costas_cc.h"
+#include "wes/costas_cc.h"
 %}
 
-%include "wes/square_ff.h"
-GR_SWIG_BLOCK_MAGIC2(wes, square_ff);
-%include "wes/wes_costas_cc.h"
-GR_SWIG_BLOCK_MAGIC2(wes, wes_costas_cc);
+%include "wes/costas_cc.h"
+GR_SWIG_BLOCK_MAGIC2(wes, costas_cc);

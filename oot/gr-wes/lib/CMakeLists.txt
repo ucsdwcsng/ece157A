@@ -24,8 +24,7 @@
 include(GrPlatform) #define LIB_SUFFIX
 
 list(APPEND wes_sources
-    square_ff_impl.cc
-    wes_costas_cc_impl.cc
+    costas_cc_impl.cc
 )
 
 set(wes_sources "${wes_sources}" PARENT_SCOPE)
@@ -83,4 +82,3 @@ foreach(qa_file ${test_wes_sources})
         ${CMAKE_CURRENT_SOURCE_DIR}/${qa_file}
     )
 endforeach(qa_file)
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_wes_costas_cc.cc
