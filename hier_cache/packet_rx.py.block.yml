@@ -1,0 +1,104 @@
+id: packet_rx
+label: Packet Rx
+category: Packet Operators
+
+parameters:
+-   id: eb
+    label: Filter Rolloff
+    dtype: real
+    default: '0.35'
+    hide: none
+-   id: hdr_const
+    label: Header constellation
+    dtype: raw
+    default: digital.constellation_calcdist((digital.psk_2()[0]), (digital.psk_2()[1]),
+        2, 1).base()
+    hide: none
+-   id: hdr_dec
+    label: Header FEC Decoder
+    dtype: raw
+    default: ' fec.dummy_decoder.make(8000)'
+    hide: none
+-   id: hdr_format
+    label: Header Formatter
+    dtype: raw
+    default: digital.header_format_default(digital.packet_utils.default_access_code,
+        0)
+    hide: none
+-   id: pld_const
+    label: Payload constellation
+    dtype: raw
+    default: digital.constellation_calcdist((digital.psk_2()[0]), (digital.psk_2()[1]),
+        2, 1).base()
+    hide: none
+-   id: pld_dec
+    label: Payload FEC Decoder
+    dtype: raw
+    default: ' fec.dummy_decoder.make(8000)'
+    hide: none
+-   id: psf_taps
+    label: Pulse Shape Filter
+    dtype: raw
+    default: '[0,]'
+    hide: none
+-   id: sps
+    label: Samples per Symbol
+    dtype: real
+    default: '2'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: pkt out
+    domain: message
+    dtype: message
+    optional: true
+-   label: precrc
+    domain: message
+    dtype: message
+    optional: true
+-   label: hdr_out
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: pld_out
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: pld_phs
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: timing
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: corr est
+    dtype: complex
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from packet_rx import packet_rx  # grc-generated hier_block'
+    make: "packet_rx(\n    eb=${ eb },\n    hdr_const=${ hdr_const },\n    hdr_dec=${\
+        \ hdr_dec },\n    hdr_format=${ hdr_format },\n    pld_const=${ pld_const\
+        \ },\n    pld_dec=${ pld_dec },\n    psf_taps=${ psf_taps },\n    sps=${ sps\
+        \ },\n)"
+    callbacks:
+    - set_eb(${ eb })
+    - set_hdr_const(${ hdr_const })
+    - set_hdr_dec(${ hdr_dec })
+    - set_hdr_format(${ hdr_format })
+    - set_pld_const(${ pld_const })
+    - set_pld_dec(${ pld_dec })
+    - set_psf_taps(${ psf_taps })
+    - set_sps(${ sps })
+
+documentation: /home/wes/.grc_gnuradio/packet_rx.py
+grc_source: /home/wes/gnuradio/gnuradio-3.8/gr-digital/examples/packet/packet_rx.grc
+
+file_format: 1

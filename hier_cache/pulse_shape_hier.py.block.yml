@@ -1,0 +1,44 @@
+id: pulse_shape_hier
+label: Pulse Shaping Block (Hier)
+category: WES Blocks
+
+parameters:
+-   id: bFilter
+    label: Filter Select
+    dtype: raw
+    default: '1'
+    hide: none
+-   id: roll_off
+    label: Beta (Roll-Off)
+    dtype: raw
+    default: '0.7'
+    hide: none
+-   id: sps
+    label: Samples Per Symbol
+    dtype: raw
+    default: '4'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: out
+    dtype: complex
+    vlen: 1
+
+templates:
+    imports: 'from pulse_shape_hier import pulse_shape_hier  # grc-generated hier_block'
+    make: "pulse_shape_hier(\n    bFilter=${ bFilter },\n    roll_off=${ roll_off\
+        \ },\n    sps=${ sps },\n)"
+    callbacks:
+    - set_bFilter(${ bFilter })
+    - set_roll_off(${ roll_off })
+    - set_sps(${ sps })
+
+documentation: /home/wes/.grc_gnuradio/pulse_shape_hier.py
+grc_source: /home/wes/pulse_shape_hier.grc
+
+file_format: 1

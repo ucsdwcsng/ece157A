@@ -1,0 +1,60 @@
+id: wes_packet_rx
+label: Wes Packet Rx
+category: WES Packet
+
+parameters:
+-   id: corr_tag_delay
+    label: Correlation Tag Delay
+    dtype: int
+    default: '131'
+    hide: part
+-   id: header_len
+    label: Header Length
+    dtype: int
+    default: '32'
+    hide: none
+-   id: num_skip
+    label: Number of Skipped Items
+    dtype: int
+    default: '8'
+    hide: none
+-   id: samp_rate
+    label: Sample Rate
+    dtype: real
+    default: 1e6
+    hide: none
+
+inputs:
+-   label: USRP_in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: File Out Sink
+    dtype: byte
+    vlen: 1
+    optional: true
+-   label: payload_out
+    dtype: byte
+    vlen: 1
+    optional: true
+-   label: header_out
+    dtype: byte
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from wes_packet_rx import wes_packet_rx  # grc-generated hier_block'
+    make: "wes_packet_rx(\n    corr_tag_delay=${ corr_tag_delay },\n    header_len=${\
+        \ header_len },\n    num_skip=${ num_skip },\n    samp_rate=${ samp_rate },\n\
+        )"
+    callbacks:
+    - set_corr_tag_delay(${ corr_tag_delay })
+    - set_header_len(${ header_len })
+    - set_num_skip(${ num_skip })
+    - set_samp_rate(${ samp_rate })
+
+documentation: /home/wes/.grc_gnuradio/wes_packet_rx.py
+grc_source: /home/wes/course/packet_rx_hier.grc
+
+file_format: 1

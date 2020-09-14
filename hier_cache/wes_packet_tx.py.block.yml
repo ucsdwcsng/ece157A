@@ -1,0 +1,64 @@
+id: wes_packet_tx
+label: Wes Packet Tx
+category: WES Packet
+
+parameters:
+-   id: cw_len
+    label: CW Length
+    dtype: raw
+    default: '64'
+    hide: none
+-   id: payload_len
+    label: Payload Length
+    dtype: raw
+    default: '255'
+    hide: none
+-   id: samp_rate
+    label: Sample Rate
+    dtype: real
+    default: 1e6
+    hide: none
+
+inputs:
+-   label: Byte IN
+    dtype: byte
+    vlen: 1
+
+outputs:
+-   label: PHY_Output
+    dtype: complex
+    vlen: 1
+-   label: preamble_out
+    dtype: byte
+    vlen: 1
+    optional: true
+-   label: sync_out
+    dtype: byte
+    vlen: 1
+    optional: true
+-   label: payload_out
+    dtype: byte
+    vlen: 1
+    optional: true
+-   label: header_out
+    dtype: byte
+    vlen: 1
+    optional: true
+-   label: header_uncoded_out
+    dtype: byte
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from wes_packet_tx import wes_packet_tx  # grc-generated hier_block'
+    make: "wes_packet_tx(\n    cw_len=${ cw_len },\n    payload_len=${ payload_len\
+        \ },\n    samp_rate=${ samp_rate },\n)"
+    callbacks:
+    - set_cw_len(${ cw_len })
+    - set_payload_len(${ payload_len })
+    - set_samp_rate(${ samp_rate })
+
+documentation: /home/wes/.grc_gnuradio/wes_packet_tx.py
+grc_source: /home/wes/course/packet_tx_hier.grc
+
+file_format: 1

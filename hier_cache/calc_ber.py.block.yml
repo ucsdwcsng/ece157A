@@ -1,0 +1,33 @@
+id: calc_ber
+label: BER Computation
+category: WES Blocks
+
+parameters: []
+
+inputs:
+-   label: payload in
+    dtype: complex
+    vlen: 1
+-   label: ref in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: BER Estimate
+    dtype: float
+    vlen: 1
+-   label: '# of Errors'
+    dtype: float
+    vlen: 1
+
+templates:
+    imports: 'from calc_ber import calc_ber  # grc-generated hier_block'
+    make: calc_ber()
+    callbacks: []
+
+documentation: 'wes
+
+    /home/wes/.grc_gnuradio/calc_ber.py'
+grc_source: /home/wes/calc_ber_hier.grc
+
+file_format: 1

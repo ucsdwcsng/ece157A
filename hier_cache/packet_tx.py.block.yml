@@ -1,0 +1,84 @@
+id: packet_tx
+label: Packet Tx
+category: Packet Operators
+
+parameters:
+-   id: hdr_const
+    label: Header constellation
+    dtype: raw
+    default: digital.constellation_calcdist((digital.psk_2()[0]), (digital.psk_2()[1]),
+        2, 1).base()
+    hide: none
+-   id: hdr_enc
+    label: Header FEC encoder
+    dtype: raw
+    default: ' fec.dummy_encoder_make(8000)'
+    hide: none
+-   id: hdr_format
+    label: Header Formatter
+    dtype: raw
+    default: digital.header_format_default(digital.packet_utils.default_access_code,
+        0)
+    hide: none
+-   id: pld_const
+    label: Payload constellation
+    dtype: raw
+    default: digital.constellation_calcdist((digital.psk_2()[0]), (digital.psk_2()[1]),
+        2, 1).base()
+    hide: none
+-   id: pld_enc
+    label: Payload FEC encoder
+    dtype: raw
+    default: ' fec.dummy_encoder_make(8000)'
+    hide: none
+-   id: psf_taps
+    label: Pulse Shape Filter
+    dtype: raw
+    default: '[0,]'
+    hide: none
+-   id: sps
+    label: Samples per Symbol
+    dtype: real
+    default: '2'
+    hide: none
+
+inputs:
+-   label: in
+    domain: message
+    dtype: message
+
+outputs:
+-   label: out
+    dtype: complex
+    vlen: 1
+-   label: postcrc
+    domain: message
+    dtype: message
+    optional: true
+-   label: mux
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: burst
+    dtype: complex
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from packet_tx import packet_tx  # grc-generated hier_block'
+    make: "packet_tx(\n    hdr_const=${ hdr_const },\n    hdr_enc=${ hdr_enc },\n\
+        \    hdr_format=${ hdr_format },\n    pld_const=${ pld_const },\n    pld_enc=${\
+        \ pld_enc },\n    psf_taps=${ psf_taps },\n    sps=${ sps },\n)"
+    callbacks:
+    - set_hdr_const(${ hdr_const })
+    - set_hdr_enc(${ hdr_enc })
+    - set_hdr_format(${ hdr_format })
+    - set_pld_const(${ pld_const })
+    - set_pld_enc(${ pld_enc })
+    - set_psf_taps(${ psf_taps })
+    - set_sps(${ sps })
+
+documentation: /home/wes/.grc_gnuradio/packet_tx.py
+grc_source: /home/wes/gnuradio/gnuradio-3.8/gr-digital/examples/packet/packet_tx.grc
+
+file_format: 1
