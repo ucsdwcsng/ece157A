@@ -1,0 +1,4 @@
+#!usr/bin/env sh
+
+# copy .hier file cache
+cp -r hier_cache/* ~/.grc_gnuradio
