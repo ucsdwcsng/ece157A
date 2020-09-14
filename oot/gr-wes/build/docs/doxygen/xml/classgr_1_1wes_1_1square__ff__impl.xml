@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classgr_1_1wes_1_1square__ff__impl" kind="class" language="C++" prot="public">
+    <compoundname>gr::wes::square_ff_impl</compoundname>
+    <basecompoundref refid="classgr_1_1wes_1_1square__ff" prot="public" virt="non-virtual">gr::wes::square_ff</basecompoundref>
+    <includes refid="square__ff__impl_8h" local="no">square_ff_impl.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1wes_1_1square__ff__impl_1ae7935d1d17b69466d556e3504464758b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::wes::square_ff_impl::square_ff_impl</definition>
+        <argsstring>()</argsstring>
+        <name>square_ff_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wes/gnuradio/gr-wes/lib/square_ff_impl.h" line="35" column="7"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1wes_1_1square__ff__impl_1ac02602a1482df4e45486b160f847c282" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::wes::square_ff_impl::~square_ff_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~square_ff_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wes/gnuradio/gr-wes/lib/square_ff_impl.h" line="36" column="7"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1wes_1_1square__ff__impl_1a97f67e4db877af7b052ce59149b4a4c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::wes::square_ff_impl::forecast</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items_required)</argsstring>
+        <name>forecast</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items_required</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wes/gnuradio/gr-wes/lib/square_ff_impl.h" line="39" column="12"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1wes_1_1square__ff__impl_1a70c4c635004be65dc6a5cf0043ec52fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::wes::square_ff_impl::general_work</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>general_work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/wes/gnuradio/gr-wes/lib/square_ff_impl.h" line="41" column="11"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>gr::wes::square_ff</label>
+        <link refid="classgr_1_1wes_1_1square__ff"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>gr::block</label>
+      </node>
+      <node id="1">
+        <label>gr::wes::square_ff_impl</label>
+        <link refid="classgr_1_1wes_1_1square__ff__impl"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>gr::wes::square_ff</label>
+        <link refid="classgr_1_1wes_1_1square__ff"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>gr::block</label>
+      </node>
+      <node id="1">
+        <label>gr::wes::square_ff_impl</label>
+        <link refid="classgr_1_1wes_1_1square__ff__impl"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/wes/gnuradio/gr-wes/lib/square_ff_impl.h" line="30" column="1" bodyfile="/home/wes/gnuradio/gr-wes/lib/square_ff_impl.h" bodystart="29" bodyend="46"/>
+    <listofallmembers>
+      <member refid="classgr_1_1wes_1_1square__ff__impl_1a97f67e4db877af7b052ce59149b4a4c8" prot="public" virt="non-virtual"><scope>gr::wes::square_ff_impl</scope><name>forecast</name></member>
+      <member refid="classgr_1_1wes_1_1square__ff__impl_1a70c4c635004be65dc6a5cf0043ec52fe" prot="public" virt="non-virtual"><scope>gr::wes::square_ff_impl</scope><name>general_work</name></member>
+      <member refid="classgr_1_1wes_1_1square__ff_1ad15facb0aa55d8cce0d14faea95d281c" prot="public" virt="non-virtual"><scope>gr::wes::square_ff_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1wes_1_1square__ff_1a876560c9c560413eac638aed4a4af937" prot="public" virt="non-virtual"><scope>gr::wes::square_ff_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1wes_1_1square__ff__impl_1ae7935d1d17b69466d556e3504464758b" prot="public" virt="non-virtual"><scope>gr::wes::square_ff_impl</scope><name>square_ff_impl</name></member>
+      <member refid="classgr_1_1wes_1_1square__ff__impl_1ac02602a1482df4e45486b160f847c282" prot="public" virt="non-virtual"><scope>gr::wes::square_ff_impl</scope><name>~square_ff_impl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.17">
+  <compound refid="classgr_1_1wes_1_1square__ff" kind="class"><name>gr::wes::square_ff</name>
+    <member refid="classgr_1_1wes_1_1square__ff_1a876560c9c560413eac638aed4a4af937" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1wes_1_1square__ff_1ad15facb0aa55d8cce0d14faea95d281c" kind="function"><name>make</name></member>
+  </compound>
+  <compound refid="classgr_1_1wes_1_1square__ff__impl" kind="class"><name>gr::wes::square_ff_impl</name>
+    <member refid="classgr_1_1wes_1_1square__ff__impl_1ae7935d1d17b69466d556e3504464758b" kind="function"><name>square_ff_impl</name></member>
+    <member refid="classgr_1_1wes_1_1square__ff__impl_1ac02602a1482df4e45486b160f847c282" kind="function"><name>~square_ff_impl</name></member>
+    <member refid="classgr_1_1wes_1_1square__ff__impl_1a97f67e4db877af7b052ce59149b4a4c8" kind="function"><name>forecast</name></member>
+    <member refid="classgr_1_1wes_1_1square__ff__impl_1a70c4c635004be65dc6a5cf0043ec52fe" kind="function"><name>general_work</name></member>
+  </compound>
+  <compound refid="namespacegr" kind="namespace"><name>gr</name>
+  </compound>
+  <compound refid="namespacegr_1_1wes" kind="namespace"><name>gr::wes</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="api_8h" kind="file"><name>api.h</name>
+    <member refid="api_8h_1a9e871a244eb32d115eb9a094387230cb" kind="define"><name>WES_API</name></member>
+  </compound>
+  <compound refid="group__defs_8dox" kind="file"><name>group_defs.dox</name>
+  </compound>
+  <compound refid="main__page_8dox" kind="file"><name>main_page.dox</name>
+  </compound>
+  <compound refid="square__ff_8h" kind="file"><name>square_ff.h</name>
+  </compound>
+  <compound refid="square__ff__impl_8h" kind="file"><name>square_ff_impl.h</name>
+  </compound>
+  <compound refid="group__block" kind="group"><name>block</name>
+  </compound>
+  <compound refid="dir_49e56c817e5e54854c35e136979f97ca" kind="dir"><name>docs</name>
+  </compound>
+  <compound refid="dir_359d2bec989c9a8deeeb9aee335c1c76" kind="dir"><name>doxygen</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_97aefd0d527b934f1d99a682da8fe6a9" kind="dir"><name>lib</name>
+  </compound>
+  <compound refid="dir_f2cd86917185299abf5a1f0679072f3c" kind="dir"><name>other</name>
+  </compound>
+  <compound refid="dir_d589942073ecde05aaeeaaefb6a411ec" kind="dir"><name>wes</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

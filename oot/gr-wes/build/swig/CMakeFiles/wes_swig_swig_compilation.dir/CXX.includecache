@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/wes/gnuradio/gr-wes/swig/wes_swig.i
+gnuradio.i
+/home/wes/gnuradio/gr-wes/swig/gnuradio.i
+wes_swig_doc.i
+/home/wes/gnuradio/gr-wes/swig/wes_swig_doc.i
+wes/square_ff.h
+/home/wes/gnuradio/gr-wes/swig/wes/square_ff.h
+wes/square_ff.h
+/home/wes/gnuradio/gr-wes/swig/wes/square_ff.h
+

@@ -1,0 +1,696 @@
+options:
+  parameters:
+    author: ''
+    category: WES Packet
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: hb
+    hier_block_src_path: '.:'
+    id: wes_packet_rx
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ''
+    window_size: 1920,1920
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [0, 4]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: const
+  id: variable_constellation
+  parameters:
+    comment: ''
+    const_points: digital.psk_4()[0]
+    dims: '1'
+    precision: '8'
+    rot_sym: '2'
+    soft_dec_lut: None
+    sym_map: digital.psk_4()[1]
+    type: calcdist
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [832, 8]
+    rotation: 0
+    state: enabled
+- name: header_formatter
+  id: variable
+  parameters:
+    comment: ''
+    value: digital.packet_header_default(header_len, len_tag_key,num_tag_key,2)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 140]
+    rotation: 0
+    state: enabled
+- name: len_tag_key
+  id: variable
+  parameters:
+    comment: ''
+    value: '"packet_length"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [512, 140]
+    rotation: 0
+    state: enabled
+- name: modulated_preamble
+  id: variable_modulate_vector
+  parameters:
+    comment: ''
+    data: preamble_hex
+    mod: preamble_modulator
+    taps: '[1]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 8]
+    rotation: 0
+    state: enabled
+- name: nfilts_pfb
+  id: variable
+  parameters:
+    comment: ''
+    value: '32'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 76]
+    rotation: 0
+    state: enabled
+- name: num_tag_key
+  id: variable
+  parameters:
+    comment: ''
+    value: '"bits_per_byte"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 156]
+    rotation: 0
+    state: enabled
+- name: pfb_filter
+  id: variable
+  parameters:
+    comment: ''
+    value: firdes.root_raised_cosine(nfilts_pfb, nfilts_pfb*samp_symb, 1, rolloff,
+      nfilts_pfb*11*samp_symb+1)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 12]
+    rotation: 0
+    state: enabled
+- name: pi
+  id: variable
+  parameters:
+    comment: ''
+    value: '3.141592654'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 76]
+    rotation: 0
+    state: enabled
+- name: preamble
+  id: variable
+  parameters:
+    comment: ''
+    value: preamble_bit[0:64]
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 76]
+    rotation: 0
+    state: enabled
+- name: preamble_bit
+  id: variable
+  parameters:
+    comment: ''
+    value: '[1,1,1,0,1,0,1,1,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,1,1,0,1,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,0,1,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0,1,1,0,0,0,0,0,1,1,0,1,0,0,1,0,0,0,1,1,1,0,0,0,0,1,0,0,1,1,0,0,1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,0,0,0,1,1,0,1,0,0,0,1,0,0,0,1]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 76]
+    rotation: 0
+    state: enabled
+- name: preamble_hex
+  id: variable
+  parameters:
+    comment: ''
+    value: '[0xEB, 0x11, 0x9C, 0x33, 0x6C, 0x6A, 0x29, 0x3F, 0x98, 0x34, 0x8E, 0x13,
+      0x3B, 0xF7, 0x0D, 0x11]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 12]
+    rotation: 0
+    state: enabled
+- name: preamble_modulator
+  id: variable
+  parameters:
+    comment: ''
+    value: digital.generic_mod(const, False, samp_symb, False, rolloff, False, False)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 12]
+    rotation: 0
+    state: enabled
+- name: rolloff
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [208, 12]
+    rotation: 0
+    state: enabled
+- name: samp_symb
+  id: variable
+  parameters:
+    comment: ''
+    value: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 204]
+    rotation: 0
+    state: enabled
+- name: sliced_modulated_preamble
+  id: variable
+  parameters:
+    comment: ''
+    value: modulated_preamble[100:]
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 92]
+    rotation: 0
+    state: enabled
+- name: blocks_message_debug_0
+  id: blocks_message_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [288, 776]
+    rotation: 0
+    state: enabled
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1776, 624]
+    rotation: 0
+    state: enabled
+- name: blocks_repack_bits_bb_0
+  id: blocks_repack_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    align_output: 'False'
+    comment: ''
+    endianness: gr.GR_MSB_FIRST
+    k: '2'
+    l: '8'
+    len_tag_key: '"packet_length"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1576, 692]
+    rotation: 0
+    state: enabled
+- name: blocks_repack_bits_bb_1
+  id: blocks_repack_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    align_output: 'False'
+    comment: ''
+    endianness: gr.GR_LSB_FIRST
+    k: '1'
+    l: '2'
+    len_tag_key: '""'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [864, 692]
+    rotation: 0
+    state: enabled
+- name: blocks_repack_bits_bb_1_0
+  id: blocks_repack_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    align_output: 'False'
+    comment: ''
+    endianness: gr.GR_LSB_FIRST
+    k: '1'
+    l: '2'
+    len_tag_key: '""'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 500]
+    rotation: 180
+    state: enabled
+- name: blocks_skiphead_0
+  id: blocks_skiphead
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: num_skip
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1400, 700]
+    rotation: 0
+    state: disabled
+- name: corr_tag_delay
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: part
+    label: Correlation Tag Delay
+    short_id: c
+    type: intx
+    value: '131'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [0, 80]
+    rotation: 0
+    state: enabled
+- name: digital_constellation_decoder_cb_0_0_0_0
+  id: digital_constellation_decoder_cb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Plotting analysis only
+    constellation: const
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 612]
+    rotation: 0
+    state: enabled
+- name: digital_constellation_decoder_cb_0_0_0_0_0
+  id: digital_constellation_decoder_cb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: Plotting analysis only
+    constellation: const
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 700]
+    rotation: 0
+    state: enabled
+- name: digital_costas_loop_cc_0
+  id: digital_costas_loop_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    order: '4'
+    use_snr: 'False'
+    w: 2*pi/200
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [716, 243]
+    rotation: 0
+    state: enabled
+- name: digital_descrambler_bb_0
+  id: digital_descrambler_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    len: '7'
+    mask: '0x8A'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    seed: '0x7F'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1264, 684]
+    rotation: 0
+    state: disabled
+- name: digital_diff_decoder_bb_0
+  id: digital_diff_decoder_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    modulus: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [536, 500]
+    rotation: 180
+    state: enabled
+- name: digital_diff_decoder_bb_0_0
+  id: digital_diff_decoder_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    modulus: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 700]
+    rotation: 0
+    state: enabled
+- name: digital_header_payload_demux_0_0
+  id: digital_header_payload_demux
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    guard_interval: '0'
+    header_len: header_len
+    header_padding: '0'
+    items_per_symbol: '1'
+    length_tag_key: '"packet_length"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    output_symbols: 'True'
+    samp_rate: int(samp_rate)
+    special_tags: ()
+    timing_tag_key: '"rx_time"'
+    trigger_tag_key: '"corr_est"'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 572]
+    rotation: 0
+    state: enabled
+- name: digital_packet_headerparser_b_0_0
+  id: digital_packet_headerparser_b
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    header_formatter: header_formatter.base()
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 500]
+    rotation: 180
+    state: enabled
+- name: digital_pfb_clock_sync_xxx_0
+  id: digital_pfb_clock_sync_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    filter_size: nfilts_pfb
+    init_phase: int(nfilts_pfb/2)
+    loop_bw: 2*pi/200
+    max_dev: '0.5'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    osps: '1'
+    sps: samp_symb
+    taps: pfb_filter
+    type: ccf
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [398, 271]
+    rotation: 0
+    state: enabled
+- name: header_len
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Header Length
+    short_id: ''
+    type: intx
+    value: '32'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 140]
+    rotation: 0
+    state: enabled
+- name: num_skip
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Number of Skipped Items
+    short_id: ''
+    type: intx
+    value: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [0, 276]
+    rotation: 0
+    state: enabled
+- name: pad_sink_2
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: File Out Sink
+    num_streams: '1'
+    optional: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1808, 700]
+    rotation: 0
+    state: enabled
+- name: pad_sink_3
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: payload_out
+    num_streams: '1'
+    optional: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1544, 844]
+    rotation: 0
+    state: enabled
+- name: pad_sink_3_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: header_out
+    num_streams: '1'
+    optional: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [544, 428]
+    rotation: 0
+    state: enabled
+- name: pad_source_0
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: USRP_in
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [188, 294]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Sample Rate
+    short_id: ''
+    type: eng_float
+    value: 1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [0, 184]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: lms_dd_out
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1200, 236]
+    rotation: 0
+    state: enabled
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: lms_dd_out
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [64, 596]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_repack_bits_bb_0, '0', blocks_null_sink_0, '0']
+- [blocks_repack_bits_bb_0, '0', pad_sink_2, '0']
+- [blocks_repack_bits_bb_1, '0', digital_diff_decoder_bb_0_0, '0']
+- [blocks_repack_bits_bb_1_0, '0', digital_diff_decoder_bb_0, '0']
+- [blocks_skiphead_0, '0', blocks_repack_bits_bb_0, '0']
+- [blocks_skiphead_0, '0', pad_sink_3, '0']
+- [digital_constellation_decoder_cb_0_0_0_0, '0', blocks_repack_bits_bb_1_0, '0']
+- [digital_constellation_decoder_cb_0_0_0_0_0, '0', blocks_repack_bits_bb_1, '0']
+- [digital_costas_loop_cc_0, '0', virtual_sink_0, '0']
+- [digital_descrambler_bb_0, '0', blocks_skiphead_0, '0']
+- [digital_diff_decoder_bb_0, '0', digital_packet_headerparser_b_0_0, '0']
+- [digital_diff_decoder_bb_0, '0', pad_sink_3_0, '0']
+- [digital_diff_decoder_bb_0_0, '0', blocks_repack_bits_bb_0, '0']
+- [digital_diff_decoder_bb_0_0, '0', blocks_skiphead_0, '0']
+- [digital_diff_decoder_bb_0_0, '0', digital_descrambler_bb_0, '0']
+- [digital_diff_decoder_bb_0_0, '0', pad_sink_3, '0']
+- [digital_header_payload_demux_0_0, '0', digital_constellation_decoder_cb_0_0_0_0,
+  '0']
+- [digital_header_payload_demux_0_0, '1', digital_constellation_decoder_cb_0_0_0_0_0,
+  '0']
+- [digital_packet_headerparser_b_0_0, header_data, blocks_message_debug_0, print]
+- [digital_packet_headerparser_b_0_0, header_data, digital_header_payload_demux_0_0,
+  header_data]
+- [digital_pfb_clock_sync_xxx_0, '0', digital_costas_loop_cc_0, '0']
+- [pad_source_0, '0', digital_pfb_clock_sync_xxx_0, '0']
+- [virtual_source_0, '0', digital_header_payload_demux_0_0, '0']
+
+metadata:
+  file_format: 1
