@@ -186,15 +186,15 @@ class lab3(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), 0.707, 0)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
-            1024, #size
+            4096, #size
             samp_rate, #samp_rate
             "", #name
             1 #number of inputs
         )
         self.qtgui_time_sink_x_0_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0_0.set_y_axis(-1, 1)
+        self.qtgui_time_sink_x_0_0.set_y_axis(-10000, 10000)
 
-        self.qtgui_time_sink_x_0_0.set_y_label('Amplitude', "")
+        self.qtgui_time_sink_x_0_0.set_y_label('Frequency (Hz)', "")
 
         self.qtgui_time_sink_x_0_0.enable_tags(True)
         self.qtgui_time_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
