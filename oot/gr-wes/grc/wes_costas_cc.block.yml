@@ -1,10 +1,7 @@
 id: wes_costas_cc
 label: Costas Loop
 category: '[wes]'
-
-templates:
-  imports: import wes
-  make: wes.costas_cc(${fn}, ${zeta}, ${loop_type})
+flags: [ python, cpp ]
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -39,6 +36,24 @@ outputs:
 - label: freq
   domain: stream
   dtype: complex
+
+# templates to support callbacks n stuff
+templates:
+  imports: import wes
+  make: wes.costas_cc(${fn}, ${zeta}, ${loop_type})
+  callbacks:
+  - set_natural_freq(${fn})
+  - set_damping(${zeta})
+  - set_loop_type(${loop_type})
+
+cpp_templates:
+    includes: ['#include <wes/costas_cc.h>']
+    declarations: 'wes::costas_cc::sptr ${id};'
+    make: 'this->${id} = wes::costas_cc::make(${fn}, ${zeta}, ${loop_type});'
+    callbacks:
+    - set_natural_freq(${fn})
+    - set_damping(${zeta})
+    - set_loop_type(${loop_type})
 
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.

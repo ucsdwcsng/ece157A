@@ -23,10 +23,6 @@
 
 #include <wes/api.h>
 #include <gnuradio/sync_block.h>
-#include <gnuradio/io_signature.h>
-#include <gnuradio/expj.h>
-#include <gnuradio/math.h>
-#include <gnuradio/sincos.h>
 
 namespace gr {
   namespace wes {
@@ -50,6 +46,11 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(float fn, float zeta, int loop_type);
+
+      // public setter functions
+      virtual void set_natural_freq( float fn) = 0;
+      virtual void set_damping(float zeta) = 0;
+      virtual void set_loop_type( int loop_type) = 0;
     };
 
   } // namespace wes

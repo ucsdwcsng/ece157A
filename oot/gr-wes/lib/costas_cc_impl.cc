@@ -49,7 +49,11 @@ namespace gr {
               d_natural_freq(fn),
               d_zeta(zeta),
               d_loop_type(loop_type)
-    {}
+    {
+        set_natural_freq(fn);
+        set_damping(zeta);
+        set_loop_type(loop_type);
+    }
 
     /*
      * Our virtual destructor.
@@ -126,10 +130,30 @@ namespace gr {
               // standard loop
               e = xQ;
           }
-          else
+          else if( d_loop_type == 1)
           {
               // costas loop
               e = xI*xQ;
+          }
+          else if( d_loop_type == 2)
+          {
+              // costas w/ hardlimiter
+              if( xI >= 0)
+                xI = 1;
+              else
+                xI = -1;
+
+              e = xI * xQ;
+          }
+          else if( d_loop_type == 3)
+          {
+              // qpsk "costas"
+              e = xI*xQ*( xI*xI - xQ*xQ);
+          }
+          else
+          {
+              // by default, choose the standard loop
+              e = xQ;
           }
 
           // apply phase error gain Kt
@@ -160,6 +184,18 @@ namespace gr {
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
+    }// work
+
+    void costas_cc_impl::set_natural_freq(float fn){
+        d_natural_freq = fn;
+    }
+
+    void costas_cc_impl::set_damping(float zeta){
+        d_zeta = zeta;
+    }
+
+    void costas_cc_impl::set_loop_type(int loop_type){
+        d_loop_type = loop_type;
     }
 
   } /* namespace wes */

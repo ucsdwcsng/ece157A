@@ -98,7 +98,7 @@ class lab3(gr.top_block, Qt.QWidget):
         self.bw = bw = 1
         self.buff_size = buff_size = 32768
         self.bSignal = bSignal = 0
-        self.bSelectPLL = bSelectPLL = 2
+        self.bSelectPLL = bSelectPLL = 0
         self.axis = axis = 2
 
         ##################################################
@@ -184,7 +184,36 @@ class lab3(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), 0.707, 0)
+        # Create the options list
+        self._bSelectPLL_options = (0, 1, 2, 3, )
+        # Create the labels list
+        self._bSelectPLL_labels = ('Standard', 'Costas', 'Costas w/ HL', 'QPSK Costas', )
+        # Create the combo box
+        # Create the radio buttons
+        self._bSelectPLL_group_box = Qt.QGroupBox('PLL Order' + ": ")
+        self._bSelectPLL_box = Qt.QHBoxLayout()
+        class variable_chooser_button_group(Qt.QButtonGroup):
+            def __init__(self, parent=None):
+                Qt.QButtonGroup.__init__(self, parent)
+            @pyqtSlot(int)
+            def updateButtonChecked(self, button_id):
+                self.button(button_id).setChecked(True)
+        self._bSelectPLL_button_group = variable_chooser_button_group()
+        self._bSelectPLL_group_box.setLayout(self._bSelectPLL_box)
+        for i, _label in enumerate(self._bSelectPLL_labels):
+            radio_button = Qt.QRadioButton(_label)
+            self._bSelectPLL_box.addWidget(radio_button)
+            self._bSelectPLL_button_group.addButton(radio_button, i)
+        self._bSelectPLL_callback = lambda i: Qt.QMetaObject.invokeMethod(self._bSelectPLL_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._bSelectPLL_options.index(i)))
+        self._bSelectPLL_callback(self.bSelectPLL)
+        self._bSelectPLL_button_group.buttonClicked[int].connect(
+            lambda i: self.set_bSelectPLL(self._bSelectPLL_options[i]))
+        self.top_grid_layout.addWidget(self._bSelectPLL_group_box, 12, 1, 1, 1)
+        for r in range(12, 13):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), 0.707, bSelectPLL)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
             4096, #size
             samp_rate, #samp_rate
@@ -303,35 +332,6 @@ class lab3(gr.top_block, Qt.QWidget):
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(gain_ )
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.blocks_add_const_vxx_0 = blocks.add_const_cc(1)
-        # Create the options list
-        self._bSelectPLL_options = (2, 4, 8, )
-        # Create the labels list
-        self._bSelectPLL_labels = ('Standard', 'Costas', 'QPSK Costas', )
-        # Create the combo box
-        # Create the radio buttons
-        self._bSelectPLL_group_box = Qt.QGroupBox('PLL Order' + ": ")
-        self._bSelectPLL_box = Qt.QHBoxLayout()
-        class variable_chooser_button_group(Qt.QButtonGroup):
-            def __init__(self, parent=None):
-                Qt.QButtonGroup.__init__(self, parent)
-            @pyqtSlot(int)
-            def updateButtonChecked(self, button_id):
-                self.button(button_id).setChecked(True)
-        self._bSelectPLL_button_group = variable_chooser_button_group()
-        self._bSelectPLL_group_box.setLayout(self._bSelectPLL_box)
-        for i, _label in enumerate(self._bSelectPLL_labels):
-            radio_button = Qt.QRadioButton(_label)
-            self._bSelectPLL_box.addWidget(radio_button)
-            self._bSelectPLL_button_group.addButton(radio_button, i)
-        self._bSelectPLL_callback = lambda i: Qt.QMetaObject.invokeMethod(self._bSelectPLL_button_group, "updateButtonChecked", Qt.Q_ARG("int", self._bSelectPLL_options.index(i)))
-        self._bSelectPLL_callback(self.bSelectPLL)
-        self._bSelectPLL_button_group.buttonClicked[int].connect(
-            lambda i: self.set_bSelectPLL(self._bSelectPLL_options[i]))
-        self.top_grid_layout.addWidget(self._bSelectPLL_group_box, 12, 1, 1, 1)
-        for r in range(12, 13):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(1, 2):
-            self.top_grid_layout.setColumnStretch(c, 1)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate*1000, analog.GR_COS_WAVE, fo, 1, 0, 0)
         self.analog_random_source_x_0_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 4, 8192))), True)
         self.analog_random_source_x_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 2, 8192))), True)
@@ -403,12 +403,14 @@ class lab3(gr.top_block, Qt.QWidget):
         self.iio_pluto_source_0.set_params(int(self.freqc_*1e6), int(self.samp_rate*1000), 20000000, True, True, True, 'manual', 32, '', True)
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate*1e3)
         self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
+        self.wes_costas_cc_0.set_natural_freq(self.nat_freq / (self.samp_rate*1000))
 
     def get_nat_freq(self):
         return self.nat_freq
 
     def set_nat_freq(self, nat_freq):
         self.nat_freq = nat_freq
+        self.wes_costas_cc_0.set_natural_freq(self.nat_freq / (self.samp_rate*1000))
 
     def get_lw(self):
         return self.lw
@@ -483,6 +485,7 @@ class lab3(gr.top_block, Qt.QWidget):
     def set_bSelectPLL(self, bSelectPLL):
         self.bSelectPLL = bSelectPLL
         self._bSelectPLL_callback(self.bSelectPLL)
+        self.wes_costas_cc_0.set_loop_type(self.bSelectPLL)
 
     def get_axis(self):
         return self.axis

@@ -22,10 +22,6 @@
 #define INCLUDED_WES_COSTAS_CC_IMPL_H
 
 #include <wes/costas_cc.h>
-#include <gnuradio/io_signature.h>
-#include <gnuradio/expj.h>
-#include <gnuradio/math.h>
-#include <gnuradio/sincos.h>
 
 namespace gr {
   namespace wes {
@@ -45,8 +41,13 @@ namespace gr {
       int work(
               int noutput_items,
               gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
+              gr_vector_void_star &output_items);
+
+      // public setter functions
+      void set_natural_freq( float fn);
+      void set_damping(float zeta);
+      void set_loop_type( int loop_type);
+
     };
 
   } // namespace wes

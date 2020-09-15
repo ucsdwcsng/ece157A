@@ -52,19 +52,19 @@ blocks:
     label: PLL Order
     label0: Standard
     label1: Costas
-    label2: QPSK Costas
-    label3: ''
+    label2: Costas w/ HL
+    label3: QPSK Costas
     label4: ''
     labels: '[]'
-    num_opts: '3'
-    option1: '4'
-    option2: '8'
+    num_opts: '4'
+    option1: '1'
+    option2: '2'
     option3: '3'
-    option4: '4'
+    option4: '3'
     options: '[0, 1, 2]'
     orient: Qt.QHBoxLayout
     type: int
-    value: '2'
+    value: '0'
     widget: radio_buttons
   states:
     bus_sink: false
@@ -991,7 +991,7 @@ blocks:
     alias: ''
     comment: ''
     fn: nat_freq / (samp_rate*1000)
-    loop_type: '0'
+    loop_type: bSelectPLL
     maxoutbuf: '0'
     minoutbuf: '0'
     zeta: '0.707'
@@ -999,7 +999,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [524, 576]
+    coordinate: [512, 579]
     rotation: 0
     state: true
 
