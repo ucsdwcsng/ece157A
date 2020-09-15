@@ -1,6 +1,10 @@
-# course
+# README
 
-To begin with, make sure to run the install script
+Cloning Instructions: <br />
+
+git clone https://github.com/wes268/course <br />
+
+To begin with, make sure to run the install script <br />
 
 ./setup.sh <br />
 
