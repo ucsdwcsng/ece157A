@@ -97,6 +97,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.len_tag_key = len_tag_key = "packet_length"
         self.header_len = header_len = 32
         self.cw_len = cw_len = 32
+        self.variable_qtgui_push_button_0 = variable_qtgui_push_button_0 = 0
         self.tag_s = tag_s = gr.tag_utils.python_to_tag((0, pmt.intern(len_tag_key), pmt.from_long(payload_len), pmt.intern("vect_test_src")))
         self.tag0 = tag0 = gr.tag_utils.python_to_tag((0, pmt.intern(len_tag_key), pmt.from_long(cw_len), pmt.intern("vect_cw_src")))
         self.sync_seq = sync_seq = [1, 1, -1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1]
@@ -126,6 +127,12 @@ class lab3_ber(gr.top_block, Qt.QWidget):
             payload_len=payload_len,
             samp_rate=samp_rate,
         )
+        _variable_qtgui_push_button_0_push_button = Qt.QPushButton('Reset BER')
+        _variable_qtgui_push_button_0_push_button = Qt.QPushButton('Reset BER')
+        self._variable_qtgui_push_button_0_choices = {'Pressed': 1, 'Released': 0}
+        _variable_qtgui_push_button_0_push_button.pressed.connect(lambda: self.set_variable_qtgui_push_button_0(self._variable_qtgui_push_button_0_choices['Pressed']))
+        _variable_qtgui_push_button_0_push_button.released.connect(lambda: self.set_variable_qtgui_push_button_0(self._variable_qtgui_push_button_0_choices['Released']))
+        self.top_grid_layout.addWidget(_variable_qtgui_push_button_0_push_button)
         self.qtgui_number_sink_0_0 = qtgui.number_sink(
             gr.sizeof_float,
             0,
@@ -277,8 +284,8 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.connect((self.analog_agc_xx_0, 0), (self.digital_costas_loop_cc_0, 0))
         self.connect((self.analog_noise_source_x_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.digital_constellation_decoder_cb_0, 0))
-        self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 1))
+        self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.calc_ber_0, 0), (self.qtgui_number_sink_0, 0))
         self.connect((self.calc_ber_0, 1), (self.qtgui_number_sink_0_0, 0))
         self.connect((self.digital_chunks_to_symbols_xx_0_0, 0), (self.calc_ber_0, 1))
@@ -393,6 +400,12 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.cw_len = cw_len
         self.set_tag0(gr.tag_utils.python_to_tag((0, pmt.intern(self.len_tag_key), pmt.from_long(self.cw_len), pmt.intern("vect_cw_src"))))
         self.wes_packet_tx_0.set_cw_len(self.cw_len)
+
+    def get_variable_qtgui_push_button_0(self):
+        return self.variable_qtgui_push_button_0
+
+    def set_variable_qtgui_push_button_0(self, variable_qtgui_push_button_0):
+        self.variable_qtgui_push_button_0 = variable_qtgui_push_button_0
 
     def get_tag_s(self):
         return self.tag_s
