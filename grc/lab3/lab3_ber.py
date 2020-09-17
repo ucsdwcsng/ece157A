@@ -27,7 +27,6 @@ sys.path.append(os.environ.get('GRC_HIER_PATH', os.path.expanduser('~/.grc_gnura
 from PyQt5 import Qt
 from gnuradio import qtgui
 import sip
-from calc_ber import calc_ber  # grc-generated hier_block
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import digital
@@ -44,6 +43,7 @@ import epy_module_0  # embedded python module
 import iio
 import numpy as np
 import pmt
+import wes
 from gnuradio import qtgui
 
 class lab3_ber(gr.top_block, Qt.QWidget):
@@ -97,13 +97,13 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.len_tag_key = len_tag_key = "packet_length"
         self.header_len = header_len = 32
         self.cw_len = cw_len = 32
-        self.variable_qtgui_push_button_0 = variable_qtgui_push_button_0 = 0
         self.tag_s = tag_s = gr.tag_utils.python_to_tag((0, pmt.intern(len_tag_key), pmt.from_long(payload_len), pmt.intern("vect_test_src")))
         self.tag0 = tag0 = gr.tag_utils.python_to_tag((0, pmt.intern(len_tag_key), pmt.from_long(cw_len), pmt.intern("vect_cw_src")))
         self.sync_seq = sync_seq = [1, 1, -1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1]
         self.snr_db = snr_db = snr_default
         self.samp_rate = samp_rate = 1e3
         self.rrc_filter = rrc_filter = firdes.root_raised_cosine(4, sps, 1, rolloff, 32*sps+1)
+        self.reset_ber = reset_ber = 0
         self.pn_order = pn_order = np.round(np.log2(payload_len+1))
         self.pn6_padded = pn6_padded = [1, 1, 1, 1, 1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1 -1 -1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.pn6 = pn6 = [1, 1, 1, 1, 1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1 -1 -1]
@@ -122,17 +122,18 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self._snr_db_range = Range(0, 20, 0.5, snr_default, 200)
         self._snr_db_win = RangeWidget(self._snr_db_range, self.set_snr_db, 'SNR (dB)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._snr_db_win)
+        _reset_ber_push_button = Qt.QPushButton('Reset BER')
+        _reset_ber_push_button = Qt.QPushButton('Reset BER')
+        self._reset_ber_choices = {'Pressed': 1, 'Released': 0}
+        _reset_ber_push_button.pressed.connect(lambda: self.set_reset_ber(self._reset_ber_choices['Pressed']))
+        _reset_ber_push_button.released.connect(lambda: self.set_reset_ber(self._reset_ber_choices['Released']))
+        self.top_grid_layout.addWidget(_reset_ber_push_button)
         self.wes_packet_tx_0 = wes_packet_tx(
             cw_len=cw_len,
             payload_len=payload_len,
             samp_rate=samp_rate,
         )
-        _variable_qtgui_push_button_0_push_button = Qt.QPushButton('Reset BER')
-        _variable_qtgui_push_button_0_push_button = Qt.QPushButton('Reset BER')
-        self._variable_qtgui_push_button_0_choices = {'Pressed': 1, 'Released': 0}
-        _variable_qtgui_push_button_0_push_button.pressed.connect(lambda: self.set_variable_qtgui_push_button_0(self._variable_qtgui_push_button_0_choices['Pressed']))
-        _variable_qtgui_push_button_0_push_button.released.connect(lambda: self.set_variable_qtgui_push_button_0(self._variable_qtgui_push_button_0_choices['Released']))
-        self.top_grid_layout.addWidget(_variable_qtgui_push_button_0_push_button)
+        self.wes_ber_0 = wes.ber(1, reset_ber)
         self.qtgui_number_sink_0_0 = qtgui.number_sink(
             gr.sizeof_float,
             0,
@@ -152,8 +153,8 @@ class lab3_ber(gr.top_block, Qt.QWidget):
             1, 1, 1, 1, 1]
 
         for i in range(1):
-            self.qtgui_number_sink_0_0.set_min(i, 0)
-            self.qtgui_number_sink_0_0.set_max(i, 1e6)
+            self.qtgui_number_sink_0_0.set_min(i, -1)
+            self.qtgui_number_sink_0_0.set_max(i, 1)
             self.qtgui_number_sink_0_0.set_color(i, colors[i][0], colors[i][1])
             if len(labels[i]) == 0:
                 self.qtgui_number_sink_0_0.set_label(i, "Data {0}".format(i))
@@ -168,11 +169,11 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.qtgui_number_sink_0 = qtgui.number_sink(
             gr.sizeof_float,
             0,
-            qtgui.NUM_GRAPH_NONE,
+            qtgui.NUM_GRAPH_HORIZ,
             1
         )
         self.qtgui_number_sink_0.set_update_time(0.10)
-        self.qtgui_number_sink_0.set_title("Bit Error Rate")
+        self.qtgui_number_sink_0.set_title("BER")
 
         labels = ['', '', '', '', '',
             '', '', '', '', '']
@@ -265,11 +266,6 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.digital_corr_est_cc_0 = digital.corr_est_cc(pn6_padded, 1, 64, 0.8, digital.THRESHOLD_ABSOLUTE)
         self.digital_constellation_decoder_cb_0_0_0_0_0 = digital.constellation_decoder_cb(const)
         self.digital_constellation_decoder_cb_0_0_0_0 = digital.constellation_decoder_cb(const)
-        self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(const)
-        self.digital_chunks_to_symbols_xx_0_0_0_0 = digital.chunks_to_symbols_bc((-1,1), 1)
-        self.digital_chunks_to_symbols_xx_0_0_0 = digital.chunks_to_symbols_bc((-1,1), 1)
-        self.digital_chunks_to_symbols_xx_0_0 = digital.chunks_to_symbols_bc((-1,1), 1)
-        self.calc_ber_0 = calc_ber()
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, np.sqrt(2)*np.sqrt(0.5 / np.power(10,snr_db/10)), 0)
         self.analog_agc_xx_0 = analog.agc_cc(1e-4, 1.0, 1.0)
@@ -283,28 +279,24 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.msg_connect((self.digital_packet_headerparser_b_0_0, 'header_data'), (self.digital_header_payload_demux_0, 'header_data'))
         self.connect((self.analog_agc_xx_0, 0), (self.digital_costas_loop_cc_0, 0))
         self.connect((self.analog_noise_source_x_0, 0), (self.blocks_add_xx_0, 0))
-        self.connect((self.blocks_add_xx_0, 0), (self.digital_constellation_decoder_cb_0, 0))
-        self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 1))
+        self.connect((self.blocks_add_xx_0, 0), (self.digital_constellation_decoder_cb_0_0_0_0_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
-        self.connect((self.calc_ber_0, 0), (self.qtgui_number_sink_0, 0))
-        self.connect((self.calc_ber_0, 1), (self.qtgui_number_sink_0_0, 0))
-        self.connect((self.digital_chunks_to_symbols_xx_0_0, 0), (self.calc_ber_0, 1))
-        self.connect((self.digital_chunks_to_symbols_xx_0_0_0, 0), (self.blocks_add_xx_0, 1))
-        self.connect((self.digital_chunks_to_symbols_xx_0_0_0_0, 0), (self.calc_ber_0, 0))
-        self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_chunks_to_symbols_xx_0_0_0_0, 0))
+        self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 1))
         self.connect((self.digital_constellation_decoder_cb_0_0_0_0, 0), (self.digital_diff_decoder_bb_0, 0))
         self.connect((self.digital_constellation_decoder_cb_0_0_0_0_0, 0), (self.digital_diff_decoder_bb_0_0, 0))
         self.connect((self.digital_corr_est_cc_0, 0), (self.digital_header_payload_demux_0, 0))
         self.connect((self.digital_costas_loop_cc_0, 0), (self.digital_pfb_clock_sync_xxx_0, 0))
         self.connect((self.digital_diff_decoder_bb_0, 0), (self.digital_packet_headerparser_b_0_0, 0))
-        self.connect((self.digital_diff_decoder_bb_0_0, 0), (self.digital_chunks_to_symbols_xx_0_0_0, 0))
-        self.connect((self.digital_glfsr_source_x_0, 0), (self.digital_chunks_to_symbols_xx_0_0, 0))
+        self.connect((self.digital_diff_decoder_bb_0_0, 0), (self.wes_ber_0, 0))
+        self.connect((self.digital_glfsr_source_x_0, 0), (self.wes_ber_0, 1))
         self.connect((self.digital_glfsr_source_x_0, 0), (self.wes_packet_tx_0, 0))
+        self.connect((self.digital_header_payload_demux_0, 1), (self.blocks_add_xx_0, 1))
         self.connect((self.digital_header_payload_demux_0, 0), (self.digital_constellation_decoder_cb_0_0_0_0, 0))
-        self.connect((self.digital_header_payload_demux_0, 1), (self.digital_constellation_decoder_cb_0_0_0_0_0, 0))
         self.connect((self.digital_pfb_clock_sync_xxx_0, 0), (self.digital_corr_est_cc_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.analog_agc_xx_0, 0))
         self.connect((self.pulse_shape_hier_0, 0), (self.iio_pluto_sink_0, 0))
+        self.connect((self.wes_ber_0, 0), (self.qtgui_number_sink_0, 0))
+        self.connect((self.wes_ber_0, 1), (self.qtgui_number_sink_0_0, 0))
         self.connect((self.wes_packet_tx_0, 0), (self.pulse_shape_hier_0, 0))
 
     def closeEvent(self, event):
@@ -401,12 +393,6 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.set_tag0(gr.tag_utils.python_to_tag((0, pmt.intern(self.len_tag_key), pmt.from_long(self.cw_len), pmt.intern("vect_cw_src"))))
         self.wes_packet_tx_0.set_cw_len(self.cw_len)
 
-    def get_variable_qtgui_push_button_0(self):
-        return self.variable_qtgui_push_button_0
-
-    def set_variable_qtgui_push_button_0(self, variable_qtgui_push_button_0):
-        self.variable_qtgui_push_button_0 = variable_qtgui_push_button_0
-
     def get_tag_s(self):
         return self.tag_s
 
@@ -446,6 +432,13 @@ class lab3_ber(gr.top_block, Qt.QWidget):
 
     def set_rrc_filter(self, rrc_filter):
         self.rrc_filter = rrc_filter
+
+    def get_reset_ber(self):
+        return self.reset_ber
+
+    def set_reset_ber(self, reset_ber):
+        self.reset_ber = reset_ber
+        self.wes_ber_0.reset_stats(self.reset_ber)
 
     def get_pn_order(self):
         return self.pn_order

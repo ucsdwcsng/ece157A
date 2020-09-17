@@ -23,5 +23,6 @@
 ########################################################################
 install(FILES
     api.h
-    costas_cc.h DESTINATION include/wes
+    costas_cc.h
+    ber.h DESTINATION include/wes
 )

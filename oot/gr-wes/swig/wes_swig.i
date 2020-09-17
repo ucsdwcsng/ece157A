@@ -9,7 +9,10 @@
 
 %{
 #include "wes/costas_cc.h"
+#include "wes/ber.h"
 %}
 
 %include "wes/costas_cc.h"
 GR_SWIG_BLOCK_MAGIC2(wes, costas_cc);
+%include "wes/ber.h"
+GR_SWIG_BLOCK_MAGIC2(wes, ber);
