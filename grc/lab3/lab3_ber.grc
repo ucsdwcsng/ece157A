@@ -38,8 +38,8 @@ blocks:
     comment: ''
     gui_hint: ''
     label: TX Filter Select
-    label0: Raised Cosine
-    label1: Root Raised Cosine
+    label0: Raised Cosine (Mis-Matched)
+    label1: Root Raised Cosine (Matched)
     label2: Root-Raised Cosine
     label3: ''
     label4: ''
@@ -208,7 +208,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1682, 5]
+    coordinate: [1682, 4]
     rotation: 0
     state: enabled
 - name: pi

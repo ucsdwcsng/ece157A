@@ -133,7 +133,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         # Create the options list
         self._bFilter_options = (1, 2, )
         # Create the labels list
-        self._bFilter_labels = ('Raised Cosine', 'Root Raised Cosine', )
+        self._bFilter_labels = ('Raised Cosine (Mis-Matched)', 'Root Raised Cosine (Matched)', )
         # Create the combo box
         self._bFilter_tool_bar = Qt.QToolBar(self)
         self._bFilter_tool_bar.addWidget(Qt.QLabel('TX Filter Select' + ": "))
