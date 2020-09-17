@@ -8,6 +8,11 @@ parameters:
     dtype: raw
     default: '1'
     hide: none
+-   id: rect_taps
+    label: Filter
+    dtype: raw
+    default: (1,1,1,1,1,1,1,1)
+    hide: none
 -   id: roll_off
     label: Beta (Roll-Off)
     dtype: raw
@@ -31,14 +36,15 @@ outputs:
 
 templates:
     imports: 'from pulse_shape_hier import pulse_shape_hier  # grc-generated hier_block'
-    make: "pulse_shape_hier(\n    bFilter=${ bFilter },\n    roll_off=${ roll_off\
-        \ },\n    sps=${ sps },\n)"
+    make: "pulse_shape_hier(\n    bFilter=${ bFilter },\n    rect_taps=${ rect_taps\
+        \ },\n    roll_off=${ roll_off },\n    sps=${ sps },\n)"
     callbacks:
     - set_bFilter(${ bFilter })
+    - set_rect_taps(${ rect_taps })
     - set_roll_off(${ roll_off })
     - set_sps(${ sps })
 
 documentation: /home/wes/.grc_gnuradio/pulse_shape_hier.py
-grc_source: /home/wes/pulse_shape_hier.grc
+grc_source: /home/wes/course/grc/hier/pulse_shape_hier.grc
 
 file_format: 1

@@ -25,6 +25,7 @@ import sys
 sys.path.append(os.environ.get('GRC_HIER_PATH', os.path.expanduser('~/.grc_gnuradio')))
 
 from PyQt5 import Qt
+from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import qtgui
 import sip
 from gnuradio import analog
@@ -115,6 +116,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.header_formatter = header_formatter = digital.packet_header_default(header_len, len_tag_key,num_tag_key,1)
         self.const = const = digital.constellation_calcdist(digital.psk_2()[0], digital.psk_2()[1],
         2, 1).base()
+        self.bFilter = bFilter = 1
 
         ##################################################
         # Blocks
@@ -128,6 +130,22 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         _reset_ber_push_button.pressed.connect(lambda: self.set_reset_ber(self._reset_ber_choices['Pressed']))
         _reset_ber_push_button.released.connect(lambda: self.set_reset_ber(self._reset_ber_choices['Released']))
         self.top_grid_layout.addWidget(_reset_ber_push_button)
+        # Create the options list
+        self._bFilter_options = (1, 2, )
+        # Create the labels list
+        self._bFilter_labels = ('Raised Cosine', 'Root Raised Cosine', )
+        # Create the combo box
+        self._bFilter_tool_bar = Qt.QToolBar(self)
+        self._bFilter_tool_bar.addWidget(Qt.QLabel('TX Filter Select' + ": "))
+        self._bFilter_combo_box = Qt.QComboBox()
+        self._bFilter_tool_bar.addWidget(self._bFilter_combo_box)
+        for _label in self._bFilter_labels: self._bFilter_combo_box.addItem(_label)
+        self._bFilter_callback = lambda i: Qt.QMetaObject.invokeMethod(self._bFilter_combo_box, "setCurrentIndex", Qt.Q_ARG("int", self._bFilter_options.index(i)))
+        self._bFilter_callback(self.bFilter)
+        self._bFilter_combo_box.currentIndexChanged.connect(
+            lambda i: self.set_bFilter(self._bFilter_options[i]))
+        # Create the radio buttons
+        self.top_grid_layout.addWidget(self._bFilter_tool_bar)
         self.wes_packet_tx_0 = wes_packet_tx(
             cw_len=cw_len,
             payload_len=payload_len,
@@ -239,7 +257,8 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_const_sink_x_0_win)
         self.pulse_shape_hier_0 = pulse_shape_hier(
-            bFilter=1,
+            bFilter=bFilter,
+            rect_taps=(1,1,1,1),
             roll_off=rolloff,
             sps=sps,
         )
@@ -502,6 +521,14 @@ class lab3_ber(gr.top_block, Qt.QWidget):
 
     def set_const(self, const):
         self.const = const
+
+    def get_bFilter(self):
+        return self.bFilter
+
+    def set_bFilter(self, bFilter):
+        self.bFilter = bFilter
+        self._bFilter_callback(self.bFilter)
+        self.pulse_shape_hier_0.set_bFilter(self.bFilter)
 
 
 def argument_parser():

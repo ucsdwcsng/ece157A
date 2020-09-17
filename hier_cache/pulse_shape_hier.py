@@ -13,12 +13,13 @@ from gnuradio.filter import firdes
 from gnuradio import gr
 import sys
 import signal
+import numpy as np
 
 
 
 
 class pulse_shape_hier(gr.hier_block2):
-    def __init__(self, bFilter=1, roll_off=0.7, sps=4):
+    def __init__(self, bFilter=1, rect_taps=(1,1,1,1,1,1,1,1), roll_off=0.7, sps=4):
         gr.hier_block2.__init__(
             self, "Pulse Shaping Block (Hier)",
                 gr.io_signature(1, 1, gr.sizeof_gr_complex*1),
@@ -29,6 +30,7 @@ class pulse_shape_hier(gr.hier_block2):
         # Parameters
         ##################################################
         self.bFilter = bFilter
+        self.rect_taps = rect_taps
         self.roll_off = roll_off
         self.sps = sps
 
@@ -41,7 +43,7 @@ class pulse_shape_hier(gr.hier_block2):
         ##################################################
         # Blocks
         ##################################################
-        self.interp_fir_filter_xxx_1_0 = filter.interp_fir_filter_ccc(sps, (1,1,1,1,1,1,1,1))
+        self.interp_fir_filter_xxx_1_0 = filter.interp_fir_filter_ccc(sps, rect_taps)
         self.interp_fir_filter_xxx_1_0.declare_sample_delay(0)
         self.interp_fir_filter_xxx_1 = filter.interp_fir_filter_ccc(sps, rrc_filter)
         self.interp_fir_filter_xxx_1.declare_sample_delay(0)
@@ -61,6 +63,7 @@ class pulse_shape_hier(gr.hier_block2):
         self.connect((self.blocks_multiply_const_vxx_0_0_0, 0), (self.blocks_selector_0_0, 0))
         self.connect((self.blocks_selector_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.interp_fir_filter_xxx_0, 0), (self.blocks_selector_0_0, 1))
+        self.connect((self.interp_fir_filter_xxx_1, 0), (self.blocks_selector_0_0, 2))
         self.connect((self.interp_fir_filter_xxx_1, 0), (self.interp_fir_filter_xxx_0, 0))
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_multiply_const_vxx_0_0_0, 0))
         self.connect((self, 0), (self.interp_fir_filter_xxx_1, 0))
@@ -72,6 +75,13 @@ class pulse_shape_hier(gr.hier_block2):
     def set_bFilter(self, bFilter):
         self.bFilter = bFilter
         self.blocks_selector_0_0.set_input_index(self.bFilter)
+
+    def get_rect_taps(self):
+        return self.rect_taps
+
+    def set_rect_taps(self, rect_taps):
+        self.rect_taps = rect_taps
+        self.interp_fir_filter_xxx_1_0.set_taps(self.rect_taps)
 
     def get_roll_off(self):
         return self.roll_off

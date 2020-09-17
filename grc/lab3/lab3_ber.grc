@@ -32,6 +32,35 @@ options:
     state: enabled
 
 blocks:
+- name: bFilter
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: TX Filter Select
+    label0: Raised Cosine
+    label1: Root Raised Cosine
+    label2: Root-Raised Cosine
+    label3: ''
+    label4: ''
+    labels: '[]'
+    num_opts: '2'
+    option1: '2'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '1'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1091, 181]
+    rotation: 0
+    state: true
 - name: const
   id: variable_constellation
   parameters:
@@ -331,7 +360,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [429, 144]
+    coordinate: [428, 132]
     rotation: 0
     state: true
 - name: sps
@@ -729,7 +758,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [868, 222]
+    coordinate: [869, 230]
     rotation: 0
     state: true
 - name: iio_pluto_source_0
@@ -777,10 +806,11 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bFilter: '1'
+    bFilter: bFilter
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
+    rect_taps: (1,1,1,1)
     roll_off: rolloff
     sps: sps
   states:

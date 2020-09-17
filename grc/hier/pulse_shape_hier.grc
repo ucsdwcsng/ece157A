@@ -88,7 +88,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [835, 274]
+    coordinate: [878, 326]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0_0_0
@@ -119,7 +119,7 @@ blocks:
     input_index: bFilter
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_inputs: '2'
+    num_inputs: '3'
     num_outputs: '1'
     output_index: '0'
     showports: 'True'
@@ -129,9 +129,22 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [596, 242]
+    coordinate: [651, 282]
     rotation: 0
     state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy as np
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [13, 105]
+    rotation: 0
+    state: true
 - name: interp_fir_filter_xxx_0
   id: interp_fir_filter_xxx
   parameters:
@@ -148,7 +161,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [377, 285]
+    coordinate: [414, 302]
     rotation: 0
     state: true
 - name: interp_fir_filter_xxx_1
@@ -167,7 +180,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [163, 285]
+    coordinate: [209, 366]
     rotation: 0
     state: true
 - name: interp_fir_filter_xxx_1_0
@@ -180,7 +193,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_delay: '0'
-    taps: (1,1,1,1,1,1,1,1)
+    taps: rect_taps
     type: ccc
   states:
     bus_sink: false
@@ -204,7 +217,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1023, 274]
+    coordinate: [1066, 326]
     rotation: 0
     state: true
 - name: pad_source_0
@@ -224,7 +237,24 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [23, 234]
+    coordinate: [35, 252]
+    rotation: 0
+    state: true
+- name: rect_taps
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Filter
+    short_id: ''
+    type: ''
+    value: (1,1,1,1,1,1,1,1)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [866, 11]
     rotation: 0
     state: true
 - name: roll_off
@@ -267,6 +297,7 @@ connections:
 - [blocks_multiply_const_vxx_0_0_0, '0', blocks_selector_0_0, '0']
 - [blocks_selector_0_0, '0', blocks_multiply_const_vxx_0, '0']
 - [interp_fir_filter_xxx_0, '0', blocks_selector_0_0, '1']
+- [interp_fir_filter_xxx_1, '0', blocks_selector_0_0, '2']
 - [interp_fir_filter_xxx_1, '0', interp_fir_filter_xxx_0, '0']
 - [interp_fir_filter_xxx_1_0, '0', blocks_multiply_const_vxx_0_0_0, '0']
 - [pad_source_0, '0', interp_fir_filter_xxx_1, '0']
