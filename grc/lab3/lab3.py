@@ -82,6 +82,7 @@ class lab3(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.freqc = freqc = 900
+        self.zeta = zeta = 0.707
         self.std_dev = std_dev = 0.01
         self.sps = sps = 8
         self.samp_rate = samp_rate = 1000
@@ -104,6 +105,13 @@ class lab3(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
+        self._zeta_range = Range(0, 4, 0.001, 0.707, 200)
+        self._zeta_win = RangeWidget(self._zeta_range, self.set_zeta, 'Damping Factor (Zeta)', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._zeta_win, 13, 0, 1, 1)
+        for r in range(13, 14):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.tab0 = Qt.QTabWidget()
         self.tab0_widget_0 = Qt.QWidget()
         self.tab0_layout_0 = Qt.QBoxLayout(Qt.QBoxLayout.TopToBottom, self.tab0_widget_0)
@@ -213,7 +221,7 @@ class lab3(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(1, 2):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), 0.707, bSelectPLL)
+        self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), zeta, bSelectPLL)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
             4096, #size
             samp_rate, #samp_rate
@@ -378,6 +386,13 @@ class lab3(gr.top_block, Qt.QWidget):
     def set_freqc(self, freqc):
         self.freqc = freqc
         self.set_freqc_(self.freqc)
+
+    def get_zeta(self):
+        return self.zeta
+
+    def set_zeta(self, zeta):
+        self.zeta = zeta
+        self.wes_costas_cc_0.set_damping(self.zeta)
 
     def get_std_dev(self):
         return self.std_dev
