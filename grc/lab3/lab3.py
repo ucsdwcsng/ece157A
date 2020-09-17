@@ -224,7 +224,7 @@ class lab3(gr.top_block, Qt.QWidget):
         self.wes_costas_cc_0 = wes.costas_cc(nat_freq / (samp_rate*1000), zeta, bSelectPLL)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
             4096, #size
-            samp_rate, #samp_rate
+            samp_rate*1000, #samp_rate
             "", #name
             1 #number of inputs
         )
@@ -417,7 +417,7 @@ class lab3(gr.top_block, Qt.QWidget):
         self.iio_pluto_sink_0.set_params(int(self.freqc_*1e6), int(self.samp_rate*1000), 20000000, 10.0, '', True)
         self.iio_pluto_source_0.set_params(int(self.freqc_*1e6), int(self.samp_rate*1000), 20000000, True, True, True, 'manual', 32, '', True)
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate*1e3)
-        self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate*1000)
         self.wes_costas_cc_0.set_natural_freq(self.nat_freq / (self.samp_rate*1000))
 
     def get_nat_freq(self):

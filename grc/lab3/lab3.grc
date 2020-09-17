@@ -930,7 +930,7 @@ blocks:
     name: '""'
     nconnections: '1'
     size: '4096'
-    srate: samp_rate
+    srate: samp_rate*1000
     stemplot: 'False'
     style1: '1'
     style10: '1'
