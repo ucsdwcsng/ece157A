@@ -58,7 +58,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1593, 8]
+    coordinate: [1593, 9]
     rotation: 0
     state: true
 - name: axis
@@ -159,7 +159,7 @@ blocks:
   parameters:
     comment: ''
     gui_hint: 11, 0,1,1
-    label: Echo Path Gain
+    label: Echo Path Gain (A)
     min_len: '200'
     orient: Qt.Horizontal
     rangeType: float
@@ -184,9 +184,9 @@ blocks:
     min_len: '200'
     orient: Qt.Horizontal
     rangeType: float
-    start: '-2000'
+    start: '-5000'
     step: '1'
-    stop: '2000'
+    stop: '5000'
     value: '800'
     widget: counter_slider
   states:
@@ -524,7 +524,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1110, 596]
+    coordinate: [1474, 594]
     rotation: 0
     state: true
 - name: blocks_multiply_xx_0
@@ -559,7 +559,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1152, 509]
+    coordinate: [1516, 507]
     rotation: 0
     state: true
 - name: blocks_selector_0
@@ -601,7 +601,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1334, 588]
+    coordinate: [1698, 586]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0_0
@@ -620,7 +620,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1527, 588]
+    coordinate: [1891, 586]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0_0_0
@@ -639,7 +639,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1709, 589]
+    coordinate: [2073, 587]
     rotation: 0
     state: true
 - name: digital_chunks_to_symbols_xx_1
@@ -679,7 +679,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [874, 547]
+    coordinate: [1238, 545]
     rotation: 0
     state: true
 - name: digital_costas_loop_cc_0
@@ -1035,7 +1035,7 @@ blocks:
     alias: ''
     comment: ''
     gui_hint: 0,0,10,2
-    label0: Loop Filter Output
+    label0: Cross-Correlation
     label1: Spectrum
     label10: Tab 10
     label11: Tab 11
@@ -1073,7 +1073,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1887, 596]
+    coordinate: [2251, 594]
     rotation: 0
     state: true
 - name: virtual_source_0

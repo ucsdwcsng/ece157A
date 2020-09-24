@@ -113,7 +113,7 @@ class lab4(gr.top_block, Qt.QWidget):
         self.tab0_layout_0 = Qt.QBoxLayout(Qt.QBoxLayout.TopToBottom, self.tab0_widget_0)
         self.tab0_grid_layout_0 = Qt.QGridLayout()
         self.tab0_layout_0.addLayout(self.tab0_grid_layout_0)
-        self.tab0.addTab(self.tab0_widget_0, 'Loop Filter Output')
+        self.tab0.addTab(self.tab0_widget_0, 'Cross-Correlation')
         self.tab0_widget_1 = Qt.QWidget()
         self.tab0_layout_1 = Qt.QBoxLayout(Qt.QBoxLayout.TopToBottom, self.tab0_widget_1)
         self.tab0_grid_layout_1 = Qt.QGridLayout()
@@ -149,7 +149,7 @@ class lab4(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._fo_range = Range(-2000, 2000, 1, 800, 200)
+        self._fo_range = Range(-5000, 5000, 1, 800, 200)
         self._fo_win = RangeWidget(self._fo_range, self.set_fo, 'Frequency Offset (Hz)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._fo_win, 12, 0, 1, 1)
         for r in range(12, 13):
@@ -157,7 +157,7 @@ class lab4(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._echo_gain_range = Range(0, 1, 0.01, 0, 200)
-        self._echo_gain_win = RangeWidget(self._echo_gain_range, self.set_echo_gain, 'Echo Path Gain', "counter_slider", float)
+        self._echo_gain_win = RangeWidget(self._echo_gain_range, self.set_echo_gain, 'Echo Path Gain (A)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._echo_gain_win, 11, 0, 1, 1)
         for r in range(11, 12):
             self.top_grid_layout.setRowStretch(r, 1)
