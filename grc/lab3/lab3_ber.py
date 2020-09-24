@@ -88,9 +88,10 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.rolloff = rolloff = 0.5
         self.sps = sps = 4
         self.snr_default = snr_default = 8.5
-        self.rolloff = rolloff = 0.5
+        self.rolloff_ = rolloff_ = rolloff
         self.payload_len = payload_len = 31
         self.num_tag_key = num_tag_key = "packet_num"
         self.nfilts_pfb = nfilts_pfb = 32
@@ -103,14 +104,14 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.sync_seq = sync_seq = [1, 1, -1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1]
         self.snr_db = snr_db = snr_default
         self.samp_rate = samp_rate = 1e3
-        self.rrc_filter = rrc_filter = firdes.root_raised_cosine(4, sps, 1, rolloff, 32*sps+1)
+        self.rrc_filter = rrc_filter = firdes.root_raised_cosine(4, sps, 1, rolloff_, 32*sps+1)
         self.reset_ber = reset_ber = 0
         self.pn_order = pn_order = np.round(np.log2(payload_len+1))
         self.pn6_padded = pn6_padded = [1, 1, 1, 1, 1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1 -1 -1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.pn6 = pn6 = [1, 1, 1, 1, 1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1 -1 -1]
         self.pn5 = pn5 = [1,-1,1,-1,1, 1, 1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1]
         self.pi = pi = np.pi
-        self.pfb_filter = pfb_filter = firdes.root_raised_cosine(nfilts_pfb, nfilts_pfb*sps, 1, rolloff, nfilts_pfb*11*sps+1)
+        self.pfb_filter = pfb_filter = firdes.root_raised_cosine(nfilts_pfb, nfilts_pfb*sps, 1, rolloff_, nfilts_pfb*11*sps+1)
         self.mark_delay = mark_delay = mark_delays[sps]
         self.header_formatter_0 = header_formatter_0 = digital.packet_header_default(header_len, len_tag_key,num_tag_key,1)
         self.header_formatter = header_formatter = digital.packet_header_default(header_len, len_tag_key,num_tag_key,1)
@@ -124,6 +125,9 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self._snr_db_range = Range(0, 20, 0.5, snr_default, 200)
         self._snr_db_win = RangeWidget(self._snr_db_range, self.set_snr_db, 'SNR (dB)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._snr_db_win)
+        self._rolloff__range = Range(0.01, 0.99, 0.01, rolloff, 200)
+        self._rolloff__win = RangeWidget(self._rolloff__range, self.set_rolloff_, 'Beta (Excess BW)', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._rolloff__win)
         _reset_ber_push_button = Qt.QPushButton('Reset BER')
         _reset_ber_push_button = Qt.QPushButton('Reset BER')
         self._reset_ber_choices = {'Pressed': 1, 'Released': 0}
@@ -259,7 +263,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.pulse_shape_hier_0 = pulse_shape_hier(
             bFilter=bFilter,
             rect_taps=(1,1,1,1),
-            roll_off=rolloff,
+            roll_off=rolloff_,
             sps=sps,
         )
         self.iio_pluto_source_0 = iio.pluto_source(epy_module_0.RX, int(900e6), int(samp_rate*1e3), 20000000, 32768, True, True, True, 'manual', 36, '', True)
@@ -329,14 +333,21 @@ class lab3_ber(gr.top_block, Qt.QWidget):
     def set_corr_tag_delay(self, corr_tag_delay):
         self.corr_tag_delay = corr_tag_delay
 
+    def get_rolloff(self):
+        return self.rolloff
+
+    def set_rolloff(self, rolloff):
+        self.rolloff = rolloff
+        self.set_rolloff_(self.rolloff)
+
     def get_sps(self):
         return self.sps
 
     def set_sps(self, sps):
         self.sps = sps
         self.set_mark_delay(self.mark_delays[self.sps])
-        self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff, self.nfilts_pfb*11*self.sps+1))
-        self.set_rrc_filter(firdes.root_raised_cosine(4, self.sps, 1, self.rolloff, 32*self.sps+1))
+        self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff_, self.nfilts_pfb*11*self.sps+1))
+        self.set_rrc_filter(firdes.root_raised_cosine(4, self.sps, 1, self.rolloff_, 32*self.sps+1))
         self.pulse_shape_hier_0.set_sps(self.sps)
 
     def get_snr_default(self):
@@ -346,14 +357,14 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.snr_default = snr_default
         self.set_snr_db(self.snr_default)
 
-    def get_rolloff(self):
-        return self.rolloff
+    def get_rolloff_(self):
+        return self.rolloff_
 
-    def set_rolloff(self, rolloff):
-        self.rolloff = rolloff
-        self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff, self.nfilts_pfb*11*self.sps+1))
-        self.set_rrc_filter(firdes.root_raised_cosine(4, self.sps, 1, self.rolloff, 32*self.sps+1))
-        self.pulse_shape_hier_0.set_roll_off(self.rolloff)
+    def set_rolloff_(self, rolloff_):
+        self.rolloff_ = rolloff_
+        self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff_, self.nfilts_pfb*11*self.sps+1))
+        self.set_rrc_filter(firdes.root_raised_cosine(4, self.sps, 1, self.rolloff_, 32*self.sps+1))
+        self.pulse_shape_hier_0.set_roll_off(self.rolloff_)
 
     def get_payload_len(self):
         return self.payload_len
@@ -377,7 +388,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
 
     def set_nfilts_pfb(self, nfilts_pfb):
         self.nfilts_pfb = nfilts_pfb
-        self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff, self.nfilts_pfb*11*self.sps+1))
+        self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff_, self.nfilts_pfb*11*self.sps+1))
 
     def get_mark_delays(self):
         return self.mark_delays

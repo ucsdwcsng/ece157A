@@ -203,7 +203,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: firdes.root_raised_cosine(nfilts_pfb, nfilts_pfb*sps, 1, rolloff, nfilts_pfb*11*sps+1)
+    value: firdes.root_raised_cosine(nfilts_pfb, nfilts_pfb*sps, 1, rolloff_, nfilts_pfb*11*sps+1)
   states:
     bus_sink: false
     bus_source: false
@@ -306,11 +306,32 @@ blocks:
     coordinate: [344, 70]
     rotation: 0
     state: enabled
+- name: rolloff_
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Beta (Excess BW)
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0.01'
+    step: '0.01'
+    stop: '0.99'
+    value: rolloff
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [5, 161]
+    rotation: 0
+    state: true
 - name: rrc_filter
   id: variable
   parameters:
     comment: ''
-    value: firdes.root_raised_cosine(4, sps, 1, rolloff, 32*sps+1)
+    value: firdes.root_raised_cosine(4, sps, 1, rolloff_, 32*sps+1)
   states:
     bus_sink: false
     bus_source: false
@@ -811,7 +832,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     rect_taps: (1,1,1,1)
-    roll_off: rolloff
+    roll_off: rolloff_
     sps: sps
   states:
     bus_sink: false

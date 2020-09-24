@@ -32,6 +32,35 @@ options:
     state: enabled
 
 blocks:
+- name: PLL_ON
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 13,1,1,1
+    label: PLL Select
+    label0: PLL ON
+    label1: PLL OFF
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '[]'
+    num_opts: '2'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '0'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1593, 8]
+    rotation: 0
+    state: true
 - name: axis
   id: variable
   parameters:
@@ -115,7 +144,7 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '32'
+    stop: '128'
     value: '0'
     widget: counter_slider
   states:
@@ -144,6 +173,27 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1123, 8]
+    rotation: 0
+    state: true
+- name: fo
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 12,0,1,1
+    label: Frequency Offset (Hz)
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '-2000'
+    step: '1'
+    stop: '2000'
+    value: '800'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1265, 9]
     rotation: 0
     state: true
 - name: fps
@@ -236,6 +286,23 @@ blocks:
     coordinate: [268, 187]
     rotation: 0
     state: enabled
+- name: phase_shift
+  id: variable_qtgui_check_box
+  parameters:
+    comment: ''
+    'false': '0'
+    gui_hint: 12,1,1,1
+    label: PI Phase Shift
+    'true': '1'
+    type: int
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1186, 138]
+    rotation: 0
+    state: true
 - name: pn5
   id: variable
   parameters:
@@ -273,6 +340,18 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [727, 191]
+    rotation: 0
+    state: enabled
+- name: pn6_up
+  id: variable
+  parameters:
+    comment: ''
+    value: sp.upfirdn( h_filt, pn6, sps )
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1028, 135]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -316,7 +395,29 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [411, 551]
+    coordinate: [223, 551]
+    rotation: 0
+    state: true
+- name: analog_sig_source_x_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: fo
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate*1000
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1095, 353]
     rotation: 0
     state: true
 - name: blocks_add_xx_0
@@ -350,7 +451,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1606, 600]
+    coordinate: [617, 756]
     rotation: 0
     state: true
 - name: blocks_delay_0
@@ -387,7 +488,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1025, 297]
+    coordinate: [1094, 293]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_1
@@ -414,7 +515,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    const: 1/124
+    const: (1/63/sps)*np.exp(1j*pi*phase_shift)
     maxoutbuf: '0'
     minoutbuf: '0'
     type: complex
@@ -423,7 +524,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [870, 592]
+    coordinate: [1110, 596]
+    rotation: 0
+    state: true
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 297]
     rotation: 0
     state: true
 - name: blocks_null_sink_0
@@ -440,7 +559,30 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [987, 509]
+    coordinate: [1152, 509]
+    rotation: 0
+    state: true
+- name: blocks_selector_0
+  id: blocks_selector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    enabled: 'True'
+    input_index: PLL_ON
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    num_outputs: '1'
+    output_index: '0'
+    showports: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [684, 545]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0
@@ -459,7 +601,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1070, 586]
+    coordinate: [1334, 588]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0_0
@@ -478,7 +620,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1257, 586]
+    coordinate: [1527, 588]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0_0_0
@@ -497,7 +639,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1432, 587]
+    coordinate: [1709, 589]
     rotation: 0
     state: true
 - name: digital_chunks_to_symbols_xx_1
@@ -530,14 +672,32 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     sps: sps
-    symbols: pn5_up
-    threshold: '0.8'
+    symbols: pn6_up
+    threshold: '0.7'
     threshold_method: digital.THRESHOLD_ABSOLUTE
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [639, 544]
+    coordinate: [874, 547]
+    rotation: 0
+    state: true
+- name: digital_costas_loop_cc_0
+  id: digital_costas_loop_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    order: '2'
+    use_snr: 'False'
+    w: 3.14/100
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [423, 547]
     rotation: 0
     state: true
 - name: digital_glfsr_source_x_0
@@ -546,7 +706,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    degree: '5'
+    degree: '6'
     mask: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -604,7 +764,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1181, 233]
+    coordinate: [1467, 230]
     rotation: 0
     state: true
 - name: iio_pluto_source_0
@@ -631,7 +791,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [149, 487]
+    coordinate: [3, 487]
     rotation: 0
     state: true
 - name: import_1
@@ -689,7 +849,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [587, 268]
+    coordinate: [538, 268]
     rotation: 0
     state: enabled
 - name: qtgui_freq_sink_x_0
@@ -769,7 +929,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [650, 422]
+    coordinate: [892, 423]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0_0
@@ -825,10 +985,10 @@ blocks:
     marker7: '-1'
     marker8: '-1'
     marker9: '-1'
-    name: '""'
+    name: '"Cross Correlation"'
     nconnections: '1'
     size: '4096'
-    srate: samp_rate
+    srate: samp_rate*1000
     stemplot: 'False'
     style1: '1'
     style10: '1'
@@ -866,7 +1026,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1775, 580]
+    coordinate: [822, 728]
     rotation: 0
     state: true
 - name: tab0
@@ -903,26 +1063,58 @@ blocks:
     coordinate: [1432, 4]
     rotation: 0
     state: true
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: xcorr_out
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1887, 596]
+    rotation: 0
+    state: true
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: xcorr_out
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [121, 752]
+    rotation: 0
+    state: true
 
 connections:
-- [analog_agc_xx_0, '0', digital_corr_est_cc_0, '0']
-- [analog_agc_xx_0, '0', qtgui_freq_sink_x_0, '0']
+- [analog_agc_xx_0, '0', blocks_selector_0, '1']
+- [analog_agc_xx_0, '0', digital_costas_loop_cc_0, '0']
+- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
 - [blocks_add_xx_0, '0', blocks_multiply_const_vxx_0, '0']
 - [blocks_complex_to_real_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_delay_0, '0', blocks_multiply_const_vxx_1, '0']
-- [blocks_multiply_const_vxx_0, '0', iio_pluto_sink_0, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_multiply_xx_0, '0']
 - [blocks_multiply_const_vxx_1, '0', blocks_add_xx_0, '1']
 - [blocks_multiply_const_vxx_2, '0', blocks_tag_gate_0, '0']
+- [blocks_multiply_xx_0, '0', iio_pluto_sink_0, '0']
+- [blocks_selector_0, '0', digital_corr_est_cc_0, '0']
+- [blocks_selector_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_tag_gate_0, '0', blocks_tag_gate_0_0, '0']
 - [blocks_tag_gate_0_0, '0', blocks_tag_gate_0_0_0, '0']
-- [blocks_tag_gate_0_0_0, '0', blocks_complex_to_real_0, '0']
+- [blocks_tag_gate_0_0_0, '0', virtual_sink_0, '0']
 - [digital_chunks_to_symbols_xx_1, '0', interp_fir_filter_xxx_1_0, '0']
 - [digital_corr_est_cc_0, '0', blocks_null_sink_0, '0']
 - [digital_corr_est_cc_0, '1', blocks_multiply_const_vxx_2, '0']
+- [digital_costas_loop_cc_0, '0', blocks_selector_0, '0']
 - [digital_glfsr_source_x_0, '0', digital_chunks_to_symbols_xx_1, '0']
 - [iio_pluto_source_0, '0', analog_agc_xx_0, '0']
 - [interp_fir_filter_xxx_1_0, '0', blocks_add_xx_0, '0']
 - [interp_fir_filter_xxx_1_0, '0', blocks_delay_0, '0']
+- [virtual_source_0, '0', blocks_complex_to_real_0, '0']
 
 metadata:
   file_format: 1
