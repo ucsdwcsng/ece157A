@@ -80,9 +80,13 @@ class lab4(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.echo_gain_iir = echo_gain_iir = 0
+        self.delay_limit = delay_limit = 64
+        self.delay_iir = delay_iir = 1
         self.sps = sps = 4
         self.pn6 = pn6 = [1, 1, 1, 1, 1, 1, -1, 1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1 -1 -1]
         self.pn5 = pn5 = [1,-1,1,-1,1, 1, 1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1]
+        self.iir_taps_2 = iir_taps_2 = np.concatenate( ([1], np.zeros(int(delay_iir-1)),[-echo_gain_iir],np.zeros(int(delay_limit-delay_iir)))     )
         self.h_filt = h_filt = [1,1,1,1]
         self.freqc = freqc = 900
         self.samp_rate = samp_rate = 1000
@@ -90,10 +94,12 @@ class lab4(gr.top_block, Qt.QWidget):
         self.pn5_up = pn5_up = sp.upfirdn( h_filt, pn5, sps )
         self.phase_shift = phase_shift = 1
         self.lw = lw = 2
+        self.iir_taps = iir_taps = iir_taps_2
         self.gain_ = gain_ = 0.5
         self.freqc_ = freqc_ = freqc
         self.fps = fps = 30
         self.fo = fo = 800
+        self.equalize_on = equalize_on = 0
         self.echo_gain = echo_gain = 0
         self.delay = delay = 0
         self.const_qpsk = const_qpsk = digital.constellation_calcdist(digital.psk_4()[0], digital.psk_4()[1],
@@ -156,6 +162,26 @@ class lab4(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
+        # Create the options list
+        self._equalize_on_options = (0, 1, )
+        # Create the labels list
+        self._equalize_on_labels = ('Equalizer Off', 'Equalizer On', )
+        # Create the combo box
+        self._equalize_on_tool_bar = Qt.QToolBar(self)
+        self._equalize_on_tool_bar.addWidget(Qt.QLabel('Equalizer Select' + ": "))
+        self._equalize_on_combo_box = Qt.QComboBox()
+        self._equalize_on_tool_bar.addWidget(self._equalize_on_combo_box)
+        for _label in self._equalize_on_labels: self._equalize_on_combo_box.addItem(_label)
+        self._equalize_on_callback = lambda i: Qt.QMetaObject.invokeMethod(self._equalize_on_combo_box, "setCurrentIndex", Qt.Q_ARG("int", self._equalize_on_options.index(i)))
+        self._equalize_on_callback(self.equalize_on)
+        self._equalize_on_combo_box.currentIndexChanged.connect(
+            lambda i: self.set_equalize_on(self._equalize_on_options[i]))
+        # Create the radio buttons
+        self.top_grid_layout.addWidget(self._equalize_on_tool_bar, 13, 0, 1, 1)
+        for r in range(13, 14):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._echo_gain_range = Range(0, 1, 0.01, 0, 200)
         self._echo_gain_win = RangeWidget(self._echo_gain_range, self.set_echo_gain, 'Echo Path Gain (A)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._echo_gain_win, 11, 0, 1, 1)
@@ -163,7 +189,7 @@ class lab4(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._delay_range = Range(0, 128, 1, 0, 200)
+        self._delay_range = Range(0, delay_limit, 1, 0, 200)
         self._delay_win = RangeWidget(self._delay_range, self.set_delay, 'Delay (samples)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._delay_win, 11, 1, 1, 1)
         for r in range(11, 12):
@@ -288,18 +314,35 @@ class lab4(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0.set_processor_affinity([0])
         self.interp_fir_filter_xxx_1_0 = filter.interp_fir_filter_ccc(sps, (1,1,1,1))
         self.interp_fir_filter_xxx_1_0.declare_sample_delay(0)
+        self.iir_filter_xxx_0 = filter.iir_filter_ccz([(1)], iir_taps, True)
         self.iio_pluto_source_0 = iio.pluto_source(epy_module_0.RX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, True, True, True, 'manual', 32, '', True)
         self.iio_pluto_sink_0 = iio.pluto_sink(epy_module_0.TX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, False, 10.0, '', True)
+        self._echo_gain_iir_range = Range(0, 1, 0.01, 0, 200)
+        self._echo_gain_iir_win = RangeWidget(self._echo_gain_iir_range, self.set_echo_gain_iir, 'Equalizer Gain (A)', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._echo_gain_iir_win, 14, 0, 1, 1)
+        for r in range(14, 15):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.digital_glfsr_source_x_0 = digital.glfsr_source_b(6, True, 0, 1)
         self.digital_costas_loop_cc_0 = digital.costas_loop_cc(3.14/100, 2, False)
         self.digital_corr_est_cc_0 = digital.corr_est_cc(pn6_up, sps, 0, 0.7, digital.THRESHOLD_ABSOLUTE)
         self.digital_chunks_to_symbols_xx_1 = digital.chunks_to_symbols_bc(const_bpsk.points(), 1)
+        self._delay_iir_range = Range(1, delay_limit, 1, 1, 200)
+        self._delay_iir_win = RangeWidget(self._delay_iir_range, self.set_delay_iir, 'Equalizer Delay (samples)', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._delay_iir_win, 14, 1, 1, 1)
+        for r in range(14, 15):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.blocks_tag_gate_0_0_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0_0_0.set_single_key("time_est")
         self.blocks_tag_gate_0_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0_0.set_single_key("corr_est")
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0.set_single_key("amp_est")
+        self.blocks_selector_0_0 = blocks.selector(gr.sizeof_gr_complex*1,equalize_on,0)
+        self.blocks_selector_0_0.set_enabled(True)
         self.blocks_selector_0 = blocks.selector(gr.sizeof_gr_complex*1,PLL_ON,0)
         self.blocks_selector_0.set_enabled(True)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
@@ -329,8 +372,10 @@ class lab4(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_multiply_const_vxx_1, 0), (self.blocks_add_xx_0, 1))
         self.connect((self.blocks_multiply_const_vxx_2, 0), (self.blocks_tag_gate_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.iio_pluto_sink_0, 0))
-        self.connect((self.blocks_selector_0, 0), (self.digital_corr_est_cc_0, 0))
-        self.connect((self.blocks_selector_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.blocks_selector_0, 0), (self.blocks_selector_0_0, 0))
+        self.connect((self.blocks_selector_0, 0), (self.iir_filter_xxx_0, 0))
+        self.connect((self.blocks_selector_0_0, 0), (self.digital_corr_est_cc_0, 0))
+        self.connect((self.blocks_selector_0_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_tag_gate_0, 0), (self.blocks_tag_gate_0_0, 0))
         self.connect((self.blocks_tag_gate_0_0, 0), (self.blocks_tag_gate_0_0_0, 0))
         self.connect((self.blocks_tag_gate_0_0_0, 0), (self.blocks_complex_to_real_0, 0))
@@ -340,6 +385,7 @@ class lab4(gr.top_block, Qt.QWidget):
         self.connect((self.digital_costas_loop_cc_0, 0), (self.blocks_selector_0, 0))
         self.connect((self.digital_glfsr_source_x_0, 0), (self.digital_chunks_to_symbols_xx_1, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.analog_agc_xx_0, 0))
+        self.connect((self.iir_filter_xxx_0, 0), (self.blocks_selector_0_0, 1))
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_delay_0, 0))
 
@@ -347,6 +393,27 @@ class lab4(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "lab4")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_echo_gain_iir(self):
+        return self.echo_gain_iir
+
+    def set_echo_gain_iir(self, echo_gain_iir):
+        self.echo_gain_iir = echo_gain_iir
+        self.set_iir_taps_2(np.concatenate( ([1], np.zeros(int(self.delay_iir-1)),[-self.echo_gain_iir],np.zeros(int(self.delay_limit-self.delay_iir)))     ))
+
+    def get_delay_limit(self):
+        return self.delay_limit
+
+    def set_delay_limit(self, delay_limit):
+        self.delay_limit = delay_limit
+        self.set_iir_taps_2(np.concatenate( ([1], np.zeros(int(self.delay_iir-1)),[-self.echo_gain_iir],np.zeros(int(self.delay_limit-self.delay_iir)))     ))
+
+    def get_delay_iir(self):
+        return self.delay_iir
+
+    def set_delay_iir(self, delay_iir):
+        self.delay_iir = delay_iir
+        self.set_iir_taps_2(np.concatenate( ([1], np.zeros(int(self.delay_iir-1)),[-self.echo_gain_iir],np.zeros(int(self.delay_limit-self.delay_iir)))     ))
 
     def get_sps(self):
         return self.sps
@@ -370,6 +437,13 @@ class lab4(gr.top_block, Qt.QWidget):
     def set_pn5(self, pn5):
         self.pn5 = pn5
         self.set_pn5_up(sp.upfirdn( self.h_filt, self.pn5, self.sps ))
+
+    def get_iir_taps_2(self):
+        return self.iir_taps_2
+
+    def set_iir_taps_2(self, iir_taps_2):
+        self.iir_taps_2 = iir_taps_2
+        self.set_iir_taps(self.iir_taps_2)
 
     def get_h_filt(self):
         return self.h_filt
@@ -423,6 +497,13 @@ class lab4(gr.top_block, Qt.QWidget):
     def set_lw(self, lw):
         self.lw = lw
 
+    def get_iir_taps(self):
+        return self.iir_taps
+
+    def set_iir_taps(self, iir_taps):
+        self.iir_taps = iir_taps
+        self.iir_filter_xxx_0.set_taps([(1)], self.iir_taps)
+
     def get_gain_(self):
         return self.gain_
 
@@ -451,6 +532,14 @@ class lab4(gr.top_block, Qt.QWidget):
     def set_fo(self, fo):
         self.fo = fo
         self.analog_sig_source_x_0.set_frequency(self.fo)
+
+    def get_equalize_on(self):
+        return self.equalize_on
+
+    def set_equalize_on(self, equalize_on):
+        self.equalize_on = equalize_on
+        self._equalize_on_callback(self.equalize_on)
+        self.blocks_selector_0_0.set_input_index(self.equalize_on)
 
     def get_echo_gain(self):
         return self.echo_gain

@@ -58,7 +58,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1593, 9]
+    coordinate: [1593, 8]
     rotation: 0
     state: true
 - name: axis
@@ -144,7 +144,7 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '128'
+    stop: delay_limit
     value: '0'
     widget: counter_slider
   states:
@@ -154,6 +154,39 @@ blocks:
     coordinate: [978, 5]
     rotation: 0
     state: true
+- name: delay_iir
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 14, 1,1,1
+    label: Equalizer Delay (samples)
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '1'
+    step: '1'
+    stop: delay_limit
+    value: '1'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1729, 9]
+    rotation: 0
+    state: true
+- name: delay_limit
+  id: variable
+  parameters:
+    comment: ''
+    value: '64'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1432, 102]
+    rotation: 0
+    state: enabled
 - name: echo_gain
   id: variable_qtgui_range
   parameters:
@@ -172,7 +205,57 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1123, 8]
+    coordinate: [1115, 6]
+    rotation: 0
+    state: true
+- name: echo_gain_iir
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 14, 0,1,1
+    label: Equalizer Gain (A)
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.01'
+    stop: '1'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1866, 10]
+    rotation: 0
+    state: true
+- name: equalize_on
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 13,0,1,1
+    label: Equalizer Select
+    label0: Equalizer Off
+    label1: Equalizer On
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '[]'
+    num_opts: '2'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '0'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1734, 134]
     rotation: 0
     state: true
 - name: fo
@@ -274,6 +357,30 @@ blocks:
     coordinate: [880, 194]
     rotation: 0
     state: enabled
+- name: iir_taps
+  id: variable
+  parameters:
+    comment: ''
+    value: iir_taps_2
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1028, 197]
+    rotation: 0
+    state: enabled
+- name: iir_taps_2
+  id: variable
+  parameters:
+    comment: ''
+    value: np.concatenate( ([1], np.zeros(int(delay_iir-1)),[-echo_gain_iir],np.zeros(int(delay_limit-delay_iir)))     )
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1187, 135]
+    rotation: 0
+    state: enabled
 - name: lw
   id: variable
   parameters:
@@ -300,7 +407,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1186, 138]
+    coordinate: [597, 7]
     rotation: 0
     state: true
 - name: pn5
@@ -417,7 +524,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1095, 353]
+    coordinate: [1070, 347]
     rotation: 0
     state: true
 - name: blocks_add_xx_0
@@ -524,7 +631,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1474, 594]
+    coordinate: [1582, 594]
     rotation: 0
     state: true
 - name: blocks_multiply_xx_0
@@ -559,7 +666,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1516, 507]
+    coordinate: [1635, 520]
     rotation: 0
     state: true
 - name: blocks_selector_0
@@ -582,7 +689,30 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [684, 545]
+    coordinate: [677, 543]
+    rotation: 0
+    state: true
+- name: blocks_selector_0_0
+  id: blocks_selector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    enabled: 'True'
+    input_index: equalize_on
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    num_outputs: '1'
+    output_index: '0'
+    showports: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1126, 546]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0
@@ -601,7 +731,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1698, 586]
+    coordinate: [1812, 586]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0_0
@@ -620,7 +750,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1891, 586]
+    coordinate: [1999, 586]
     rotation: 0
     state: true
 - name: blocks_tag_gate_0_0_0
@@ -639,7 +769,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2073, 587]
+    coordinate: [2190, 586]
     rotation: 0
     state: true
 - name: digital_chunks_to_symbols_xx_1
@@ -679,7 +809,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1238, 545]
+    coordinate: [1343, 546]
     rotation: 0
     state: true
 - name: digital_costas_loop_cc_0
@@ -697,7 +827,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [423, 547]
+    coordinate: [413, 448]
     rotation: 0
     state: true
 - name: digital_glfsr_source_x_0
@@ -764,7 +894,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1467, 230]
+    coordinate: [1501, 244]
     rotation: 0
     state: true
 - name: iio_pluto_source_0
@@ -794,6 +924,25 @@ blocks:
     coordinate: [3, 487]
     rotation: 0
     state: true
+- name: iir_filter_xxx_0
+  id: iir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fbtaps: iir_taps
+    fftaps: (1)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    oldstyle: 'True'
+    type: ccz
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [886, 611]
+    rotation: 0
+    state: enabled
 - name: import_1
   id: import
   parameters:
@@ -929,7 +1078,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [892, 423]
+    coordinate: [1369, 424]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0_0
@@ -1073,7 +1222,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2251, 594]
+    coordinate: [2377, 594]
     rotation: 0
     state: true
 - name: virtual_source_0
@@ -1086,7 +1235,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [121, 752]
+    coordinate: [406, 752]
     rotation: 0
     state: true
 
@@ -1101,8 +1250,10 @@ connections:
 - [blocks_multiply_const_vxx_1, '0', blocks_add_xx_0, '1']
 - [blocks_multiply_const_vxx_2, '0', blocks_tag_gate_0, '0']
 - [blocks_multiply_xx_0, '0', iio_pluto_sink_0, '0']
-- [blocks_selector_0, '0', digital_corr_est_cc_0, '0']
-- [blocks_selector_0, '0', qtgui_freq_sink_x_0, '0']
+- [blocks_selector_0, '0', blocks_selector_0_0, '0']
+- [blocks_selector_0, '0', iir_filter_xxx_0, '0']
+- [blocks_selector_0_0, '0', digital_corr_est_cc_0, '0']
+- [blocks_selector_0_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_tag_gate_0, '0', blocks_tag_gate_0_0, '0']
 - [blocks_tag_gate_0_0, '0', blocks_tag_gate_0_0_0, '0']
 - [blocks_tag_gate_0_0_0, '0', virtual_sink_0, '0']
@@ -1112,6 +1263,7 @@ connections:
 - [digital_costas_loop_cc_0, '0', blocks_selector_0, '0']
 - [digital_glfsr_source_x_0, '0', digital_chunks_to_symbols_xx_1, '0']
 - [iio_pluto_source_0, '0', analog_agc_xx_0, '0']
+- [iir_filter_xxx_0, '0', blocks_selector_0_0, '1']
 - [interp_fir_filter_xxx_1_0, '0', blocks_add_xx_0, '0']
 - [interp_fir_filter_xxx_1_0, '0', blocks_delay_0, '0']
 - [virtual_source_0, '0', blocks_complex_to_real_0, '0']
