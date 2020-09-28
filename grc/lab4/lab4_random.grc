@@ -153,7 +153,19 @@ blocks:
     bus_structure: null
     coordinate: [978, 5]
     rotation: 0
-    state: true
+    state: disabled
+- name: delay
+  id: variable
+  parameters:
+    comment: ''
+    value: rand.randint(10,delay_limit-10)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1037, 131]
+    rotation: 0
+    state: enabled
 - name: delay_iir
   id: variable_qtgui_range
   parameters:
@@ -207,7 +219,19 @@ blocks:
     bus_structure: null
     coordinate: [1115, 6]
     rotation: 0
-    state: true
+    state: disabled
+- name: echo_gain
+  id: variable
+  parameters:
+    comment: ''
+    value: rand.uniform(0.2,0.9)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1022, 197]
+    rotation: 0
+    state: enabled
 - name: echo_gain_iir
   id: variable_qtgui_range
   parameters:
@@ -366,7 +390,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1028, 197]
+    coordinate: [1270, 192]
     rotation: 0
     state: enabled
 - name: iir_taps_2
@@ -378,7 +402,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1187, 135]
+    coordinate: [1494, 163]
     rotation: 0
     state: enabled
 - name: lw
@@ -432,7 +456,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [875, 132]
+    coordinate: [872, 131]
     rotation: 0
     state: enabled
 - name: pn6
@@ -458,7 +482,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1028, 135]
+    coordinate: [1265, 132]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -943,6 +967,19 @@ blocks:
     coordinate: [886, 611]
     rotation: 0
     state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import random as rand
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [94, 145]
+    rotation: 0
+    state: true
 - name: import_1
   id: import
   parameters:

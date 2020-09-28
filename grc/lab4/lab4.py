@@ -42,6 +42,7 @@ from scipy import signal as sp
 import epy_module_0  # embedded python module
 import iio
 import numpy as np
+import random as rand
 from gnuradio import qtgui
 
 class lab4(gr.top_block, Qt.QWidget):
@@ -100,8 +101,8 @@ class lab4(gr.top_block, Qt.QWidget):
         self.fps = fps = 30
         self.fo = fo = 800
         self.equalize_on = equalize_on = 0
-        self.echo_gain = echo_gain = 0
-        self.delay = delay = 0
+        self.echo_gain = echo_gain = rand.uniform(0.2,0.9)
+        self.delay = delay = rand.randint(10,delay_limit-10)
         self.const_qpsk = const_qpsk = digital.constellation_calcdist(digital.psk_4()[0], digital.psk_4()[1],
         4, 1).base()
         self.const_bpsk = const_bpsk = digital.constellation_calcdist(digital.psk_2()[0], digital.psk_2()[1],
@@ -155,7 +156,7 @@ class lab4(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._fo_range = Range(-5000, 5000, 1, 800, 200)
+        self._fo_range = Range(-10000, 10000, 1, 800, 200)
         self._fo_win = RangeWidget(self._fo_range, self.set_fo, 'Frequency Offset (Hz)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._fo_win, 12, 0, 1, 1)
         for r in range(12, 13):
@@ -181,20 +182,6 @@ class lab4(gr.top_block, Qt.QWidget):
         for r in range(13, 14):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
-            self.top_grid_layout.setColumnStretch(c, 1)
-        self._echo_gain_range = Range(0, 1, 0.01, 0, 200)
-        self._echo_gain_win = RangeWidget(self._echo_gain_range, self.set_echo_gain, 'Echo Path Gain (A)', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._echo_gain_win, 11, 0, 1, 1)
-        for r in range(11, 12):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 1):
-            self.top_grid_layout.setColumnStretch(c, 1)
-        self._delay_range = Range(0, delay_limit, 1, 0, 200)
-        self._delay_win = RangeWidget(self._delay_range, self.set_delay, 'Delay (samples)', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._delay_win, 11, 1, 1, 1)
-        for r in range(11, 12):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(1, 2):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
         self._PLL_ON_options = (0, 1, )
@@ -406,6 +393,7 @@ class lab4(gr.top_block, Qt.QWidget):
 
     def set_delay_limit(self, delay_limit):
         self.delay_limit = delay_limit
+        self.set_delay(rand.randint(10,self.delay_limit-10))
         self.set_iir_taps_2(np.concatenate( ([1], np.zeros(int(self.delay_iir-1)),[-self.echo_gain_iir],np.zeros(int(self.delay_limit-self.delay_iir)))     ))
 
     def get_delay_iir(self):
