@@ -89,7 +89,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self._samp_rate__tool_bar = Qt.QToolBar(self)
-        self._samp_rate__tool_bar.addWidget(Qt.QLabel('Sampling Rate (kS/s)' + ": "))
+        self._samp_rate__tool_bar.addWidget(Qt.QLabel('Passband Bandwidth (kHz)' + ": "))
         self._samp_rate__line_edit = Qt.QLineEdit(str(self.samp_rate_))
         self._samp_rate__tool_bar.addWidget(self._samp_rate__line_edit)
         self._samp_rate__line_edit.returnPressed.connect(

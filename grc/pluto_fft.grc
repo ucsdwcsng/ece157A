@@ -73,7 +73,7 @@ blocks:
   parameters:
     comment: ''
     gui_hint: 3,2,1,2
-    label: Sampling Rate (kS/s)
+    label: Passband Bandwidth (kHz)
     type: real
     value: samp_rate
   states:
