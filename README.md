@@ -1,5 +1,7 @@
 # README
 
+## Quick Setup Instructions
+
 Cloning Instructions:
 
     git clone https://github.com/wes268/course
