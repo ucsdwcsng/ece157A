@@ -18,16 +18,16 @@ Details on how to change this can be found here:
 
     wiki.analog.com/university/tools/pluto/users/customizing
 
-This will require you to make an ssh or serial connection to the pluto device. 
+This will require you to make an ssh or serial connection to the pluto device. The username/password are shown below:
 
     -user: root
     -password: analog
 
-Here, we'll show you how to ssh into the device:
+For this tutorial, we'll show you how to ssh into the device:
 
     ssh root@192.168.2.2
 
-Now, type these commands:
+After you have logged in by ssh, type the following commands:
 
     # fw_setenv attr_name compatible
     # fw_setenv attr_val ad9364
