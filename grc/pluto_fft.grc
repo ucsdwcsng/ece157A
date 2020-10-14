@@ -181,7 +181,7 @@ blocks:
     filter: ''
     frequency: int(freq_c*1e6)
     gain1: '''manual'''
-    manual_gain1: '64'
+    manual_gain1: gain_
     maxoutbuf: '0'
     minoutbuf: '0'
     quadrature: 'True'
@@ -192,7 +192,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [198, 284]
+    coordinate: [174, 282]
     rotation: 0
     state: true
 - name: import_0
@@ -285,7 +285,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [493, 223]
+    coordinate: [494, 223]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0
@@ -382,7 +382,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [501, 474]
+    coordinate: [500, 474]
     rotation: 0
     state: enabled
 - name: qtgui_waterfall_sink_x_0

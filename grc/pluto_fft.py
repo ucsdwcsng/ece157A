@@ -99,6 +99,13 @@ class pluto_fft(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(2, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self._gain__range = Range(0, 100, 1, gain, 200)
+        self._gain__win = RangeWidget(self._gain__range, self.set_gain_, 'RX Gain', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._gain__win, 2, 0, 1, 4)
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._freq_c_tool_bar = Qt.QToolBar(self)
         self._freq_c_tool_bar.addWidget(Qt.QLabel('Carrier Frequency (MHz)' + ": "))
         self._freq_c_line_edit = Qt.QLineEdit(str(self.freq_c))
@@ -268,14 +275,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
             self.display_grid_layout_0.setRowStretch(r, 1)
         for c in range(0, 4):
             self.display_grid_layout_0.setColumnStretch(c, 1)
-        self.iio_pluto_source_0 = iio.pluto_source('', int(freq_c*1e6), int(samp_rate_*1000), 20000000, 32768, True, True, True, 'manual', 64, '', True)
-        self._gain__range = Range(0, 100, 1, gain, 200)
-        self._gain__win = RangeWidget(self._gain__range, self.set_gain_, 'RX Gain', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._gain__win, 2, 0, 1, 4)
-        for r in range(2, 3):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 4):
-            self.top_grid_layout.setColumnStretch(c, 1)
+        self.iio_pluto_source_0 = iio.pluto_source('', int(freq_c*1e6), int(samp_rate_*1000), 20000000, 32768, True, True, True, 'manual', gain_, '', True)
 
 
 
@@ -335,7 +335,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
     def set_samp_rate_(self, samp_rate_):
         self.samp_rate_ = samp_rate_
         Qt.QMetaObject.invokeMethod(self._samp_rate__line_edit, "setText", Qt.Q_ARG("QString", eng_notation.num_to_str(self.samp_rate_)))
-        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', 64, '', True)
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', self.gain_, '', True)
         self.qtgui_freq_sink_x_0.set_frequency_range(self.freq, self.samp_rate_*1000)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate_*1000)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, self.samp_rate_*1000)
@@ -345,6 +345,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
 
     def set_gain_(self, gain_):
         self.gain_ = gain_
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', self.gain_, '', True)
 
     def get_freq_c(self):
         return self.freq_c
@@ -352,7 +353,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
     def set_freq_c(self, freq_c):
         self.freq_c = freq_c
         Qt.QMetaObject.invokeMethod(self._freq_c_line_edit, "setText", Qt.Q_ARG("QString", eng_notation.num_to_str(self.freq_c)))
-        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', 64, '', True)
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', self.gain_, '', True)
 
 
 def argument_parser():
