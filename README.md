@@ -10,4 +10,36 @@ To begin with, make sure to run the install script
 
 Note: this will require you to enter the password for sudo mode
 
+## Updating the firmware to AD9364
+
+In order to detect FM band signals we need to change the firmware so that the plutoSDR is recognized as a AD9364, this allows for a frequency range to 70Mhz to 6GHz
+
+Details on how to change this can be found here:
+
+    wiki.analog.com/university/tools/pluto/users/customizing
+
+This will require you to make an ssh or serial connection to the pluto device. 
+
+    -user: root
+    -password: analog
+
+Here, we'll show you how to ssh into the device:
+
+    ssh root@192.168.2.2
+
+Now, type these commands:
+
+    # fw_setenv attr_name compatible
+    # fw_setenv attr_val ad9364
+    # reboot
+
+After rebooting you should see the following outputs
+
+    # fw_printenv attr_name
+    attr_name=compatible
+    # fw_printenv attr_val
+    attr_val=ad9364
+
+This is how you know whether the firmware update was successful or not.
+
 
