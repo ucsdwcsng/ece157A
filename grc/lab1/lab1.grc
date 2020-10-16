@@ -1,7 +1,6 @@
 options:
   parameters:
     author: wes
-    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -23,6 +22,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: Lab 1
+    window_size: ''
   states:
     bus_sink: false
     bus_source: false
@@ -177,7 +177,6 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '2'
-    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -256,7 +255,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [519, 587]
+    coordinate: [499, 395]
     rotation: 0
     state: true
 - name: analog_random_source_x_0
@@ -292,7 +291,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [546, 518]
+    coordinate: [696, 523]
     rotation: 0
     state: true
 - name: blocks_complex_to_imag_1
@@ -324,7 +323,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [545, 476]
+    coordinate: [695, 481]
     rotation: 0
     state: true
 - name: blocks_complex_to_real_1
@@ -599,7 +598,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [743, 603]
+    coordinate: [893, 608]
     rotation: 0
     state: true
 - name: qtgui_freq_sink_x_0
@@ -679,7 +678,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [752, 462]
+    coordinate: [902, 467]
     rotation: 0
     state: true
 - name: qtgui_freq_sink_x_0_0
@@ -698,7 +697,7 @@ blocks:
     alpha8: '1.0'
     alpha9: '1.0'
     autoscale: 'False'
-    average: '1.0'
+    average: '0.1'
     axislabels: 'True'
     bw: samp_rate*1e3
     color1: '"blue"'
@@ -759,7 +758,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [753, 358]
+    coordinate: [903, 363]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -856,7 +855,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [753, 690]
+    coordinate: [903, 695]
     rotation: 0
     state: true
 - name: tab0
@@ -895,8 +894,12 @@ blocks:
     state: true
 
 connections:
+- [analog_agc_xx_0, '0', blocks_complex_to_imag_0, '0']
+- [analog_agc_xx_0, '0', blocks_complex_to_real_0, '0']
 - [analog_agc_xx_0, '0', qtgui_const_sink_x_0, '0']
 - [analog_agc_xx_0, '0', qtgui_const_sink_x_0, '1']
+- [analog_agc_xx_0, '0', qtgui_freq_sink_x_0_0, '0']
+- [analog_agc_xx_0, '0', qtgui_time_sink_x_0, '0']
 - [analog_random_source_x_0, '0', digital_psk_mod_0_0, '0']
 - [blocks_complex_to_imag_0, '0', qtgui_freq_sink_x_0, '1']
 - [blocks_complex_to_imag_1, '0', blocks_float_to_complex_0, '0']
@@ -907,10 +910,6 @@ connections:
 - [blocks_multiply_const_vxx_0, '0', blocks_complex_to_real_1, '0']
 - [blocks_multiply_const_vxx_0_0, '0', blocks_float_to_complex_0, '1']
 - [blocks_multiply_const_vxx_1, '0', analog_agc_xx_0, '0']
-- [blocks_multiply_const_vxx_1, '0', blocks_complex_to_imag_0, '0']
-- [blocks_multiply_const_vxx_1, '0', blocks_complex_to_real_0, '0']
-- [blocks_multiply_const_vxx_1, '0', qtgui_freq_sink_x_0_0, '0']
-- [blocks_multiply_const_vxx_1, '0', qtgui_time_sink_x_0, '0']
 - [digital_psk_mod_0_0, '0', blocks_multiply_const_vxx_0, '0']
 - [iio_pluto_source_0, '0', blocks_multiply_const_vxx_1, '0']
 

@@ -242,7 +242,7 @@ class lab1(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0_0.enable_autoscale(False)
         self.qtgui_freq_sink_x_0_0.enable_grid(True)
-        self.qtgui_freq_sink_x_0_0.set_fft_average(1.0)
+        self.qtgui_freq_sink_x_0_0.set_fft_average(0.1)
         self.qtgui_freq_sink_x_0_0.enable_axis_labels(True)
         self.qtgui_freq_sink_x_0_0.enable_control_panel(False)
 
@@ -391,8 +391,12 @@ class lab1(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.analog_agc_xx_0, 0), (self.blocks_complex_to_imag_0, 0))
+        self.connect((self.analog_agc_xx_0, 0), (self.blocks_complex_to_real_0, 0))
         self.connect((self.analog_agc_xx_0, 0), (self.qtgui_const_sink_x_0, 1))
         self.connect((self.analog_agc_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
+        self.connect((self.analog_agc_xx_0, 0), (self.qtgui_freq_sink_x_0_0, 0))
+        self.connect((self.analog_agc_xx_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.analog_random_source_x_0, 0), (self.digital_psk_mod_0_0, 0))
         self.connect((self.blocks_complex_to_imag_0, 0), (self.qtgui_freq_sink_x_0, 1))
         self.connect((self.blocks_complex_to_imag_1, 0), (self.blocks_float_to_complex_0, 0))
@@ -403,10 +407,6 @@ class lab1(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_complex_to_real_1, 0))
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.blocks_float_to_complex_0, 1))
         self.connect((self.blocks_multiply_const_vxx_1, 0), (self.analog_agc_xx_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.blocks_complex_to_imag_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.blocks_complex_to_real_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.qtgui_freq_sink_x_0_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.digital_psk_mod_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.blocks_multiply_const_vxx_1, 0))
 
