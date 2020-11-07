@@ -403,7 +403,7 @@ blocks:
     bus_structure: null
     coordinate: [384, 529]
     rotation: 0
-    state: bypassed
+    state: enabled
 - name: analog_noise_source_x_0
   id: analog_noise_source_x
   parameters:
@@ -852,7 +852,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [510, 634]
+    coordinate: [503, 643]
     rotation: 270
     state: true
 - name: digital_chunks_to_symbols_xx_1
@@ -1200,7 +1200,7 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    wintype: firdes.WIN_BLACKMAN_hARRIS
+    wintype: firdes.WIN_RECTANGULAR
     ymax: '10'
     ymin: '-140'
   states:
@@ -1213,7 +1213,7 @@ blocks:
 - name: qtgui_histogram_sink_x_0
   id: qtgui_histogram_sink_x
   parameters:
-    accum: 'False'
+    accum: 'True'
     affinity: ''
     alias: ''
     alpha1: '1.0'
@@ -1294,7 +1294,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1562, 465]
+    coordinate: [1563, 465]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0

@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: lab3_ber
+    id: lab3_ber_sim
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -32,27 +32,6 @@ options:
     state: enabled
 
 blocks:
-- name: agc_rate
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: AGC Decay Rate
-    min_len: '200'
-    orient: Qt.Horizontal
-    rangeType: float
-    start: 1e-4
-    step: 1e-4
-    stop: 1e-3
-    value: 1e-4
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1588, 191]
-    rotation: 0
-    state: true
 - name: bFilter
   id: variable_qtgui_chooser
   parameters:
@@ -82,18 +61,6 @@ blocks:
     coordinate: [1091, 181]
     rotation: 0
     state: true
-- name: buffer_size
-  id: variable
-  parameters:
-    comment: ''
-    value: '32768'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [586, 129]
-    rotation: 0
-    state: enabled
 - name: const
   id: variable_constellation
   parameters:
@@ -128,14 +95,14 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 900e6
+    value: 2000e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [442, 130]
+    coordinate: [444, 132]
     rotation: 0
-    state: true
+    state: enabled
 - name: header_formatter
   id: variable
   parameters:
@@ -307,7 +274,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [831, 123]
+    coordinate: [724, 127]
     rotation: 0
     state: enabled
 - name: pn_order
@@ -452,7 +419,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [688, 123]
+    coordinate: [583, 124]
     rotation: 0
     state: enabled
 - name: tag0
@@ -516,16 +483,16 @@ blocks:
     max_gain: '65536'
     maxoutbuf: '0'
     minoutbuf: '0'
-    rate: agc_rate
+    rate: 1e-4
     reference: '1.0'
     type: complex
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [262, 530]
+    coordinate: [268, 530]
     rotation: 0
-    state: enabled
+    state: true
 - name: analog_noise_source_x_0
   id: analog_noise_source_x
   parameters:
@@ -636,7 +603,7 @@ blocks:
     minoutbuf: '0'
     sps: '1'
     symbols: pn6_padded
-    threshold: '0.7'
+    threshold: '0.8'
     threshold_method: digital.THRESHOLD_ABSOLUTE
   states:
     bus_sink: false
@@ -803,55 +770,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [11, 132]
-    rotation: 0
-    state: true
-- name: iio_pluto_sink_0
-  id: iio_pluto_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    attenuation1: '10.0'
-    auto_filter: 'True'
-    bandwidth: '20000000'
-    buffer_size: buffer_size
-    comment: ''
-    cyclic: 'False'
-    filter: ''
-    frequency: int(fc)
-    samplerate: int(samp_rate*1e3)
-    uri: epy_module_0.TX
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [869, 230]
-    rotation: 0
-    state: true
-- name: iio_pluto_source_0
-  id: iio_pluto_source
-  parameters:
-    affinity: ''
-    alias: ''
-    auto_filter: 'True'
-    bandwidth: '20000000'
-    bbdc: 'True'
-    buffer_size: buffer_size
-    comment: ''
-    filter: ''
-    frequency: int(fc)
-    gain1: '''manual'''
-    manual_gain1: '36'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    quadrature: 'True'
-    rfdc: 'True'
-    samplerate: int(samp_rate*1e3)
-    uri: epy_module_0.RX
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [20, 466]
     rotation: 0
     state: true
 - name: import_0
@@ -1143,6 +1061,19 @@ blocks:
     coordinate: [658, 690]
     rotation: 0
     state: true
+- name: virtual_sink_3
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: sim
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [879, 296]
+    rotation: 0
+    state: true
 - name: virtual_source_0
   id: virtual_source
   parameters:
@@ -1182,6 +1113,19 @@ blocks:
     coordinate: [36, 842]
     rotation: 0
     state: true
+- name: virtual_source_3
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: sim
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [69, 554]
+    rotation: 0
+    state: true
 - name: wes_ber_0
   id: wes_ber
   parameters:
@@ -1214,7 +1158,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [247, 229]
+    coordinate: [247, 230]
     rotation: 0
     state: true
 
@@ -1239,11 +1183,11 @@ connections:
 - [digital_packet_headerparser_b_0_0, header_data, digital_header_payload_demux_0,
   header_data]
 - [digital_pfb_clock_sync_xxx_0, '0', digital_corr_est_cc_0, '0']
-- [iio_pluto_source_0, '0', analog_agc_xx_0, '0']
-- [pulse_shape_hier_0, '0', iio_pluto_sink_0, '0']
+- [pulse_shape_hier_0, '0', virtual_sink_3, '0']
 - [virtual_source_0, '0', virtual_sink_2, '0']
 - [virtual_source_1, '0', wes_ber_0, '1']
 - [virtual_source_2, '0', digital_header_payload_demux_0, '0']
+- [virtual_source_3, '0', analog_agc_xx_0, '0']
 - [wes_ber_0, '0', qtgui_number_sink_0, '0']
 - [wes_ber_0, '1', qtgui_number_sink_0_0, '0']
 - [wes_packet_tx_0, '0', pulse_shape_hier_0, '0']

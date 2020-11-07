@@ -41,13 +41,12 @@ from gnuradio.qtgui import Range, RangeWidget
 from pulse_shape_hier import pulse_shape_hier  # grc-generated hier_block
 from wes_packet_tx import wes_packet_tx  # grc-generated hier_block
 import epy_module_0  # embedded python module
-import iio
 import numpy as np
 import pmt
 import wes
 from gnuradio import qtgui
 
-class lab3_ber(gr.top_block, Qt.QWidget):
+class lab3_ber_sim(gr.top_block, Qt.QWidget):
 
     def __init__(self, corr_tag_delay=131):
         gr.top_block.__init__(self, "Lab3 BER")
@@ -70,7 +69,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "lab3_ber")
+        self.settings = Qt.QSettings("GNU Radio", "lab3_ber_sim")
 
         try:
             if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -115,12 +114,10 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.mark_delay = mark_delay = mark_delays[sps]
         self.header_formatter_0 = header_formatter_0 = digital.packet_header_default(header_len, len_tag_key,num_tag_key,1)
         self.header_formatter = header_formatter = digital.packet_header_default(header_len, len_tag_key,num_tag_key,1)
-        self.fc = fc = 900e6
+        self.fc = fc = 2000e6
         self.const = const = digital.constellation_calcdist(digital.psk_2()[0], digital.psk_2()[1],
         2, 1).base()
-        self.buffer_size = buffer_size = 32768
         self.bFilter = bFilter = 1
-        self.agc_rate = agc_rate = 1e-4
 
         ##################################################
         # Blocks
@@ -153,9 +150,6 @@ class lab3_ber(gr.top_block, Qt.QWidget):
             lambda i: self.set_bFilter(self._bFilter_options[i]))
         # Create the radio buttons
         self.top_grid_layout.addWidget(self._bFilter_tool_bar)
-        self._agc_rate_range = Range(1e-4, 1e-3, 1e-4, 1e-4, 200)
-        self._agc_rate_win = RangeWidget(self._agc_rate_range, self.set_agc_rate, 'AGC Decay Rate', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._agc_rate_win)
         self.wes_packet_tx_0 = wes_packet_tx(
             cw_len=cw_len,
             payload_len=payload_len,
@@ -272,8 +266,6 @@ class lab3_ber(gr.top_block, Qt.QWidget):
             roll_off=rolloff_,
             sps=sps,
         )
-        self.iio_pluto_source_0 = iio.pluto_source(epy_module_0.RX, int(fc), int(samp_rate*1e3), 20000000, buffer_size, True, True, True, 'manual', 36, '', True)
-        self.iio_pluto_sink_0 = iio.pluto_sink(epy_module_0.TX, int(fc), int(samp_rate*1e3), 20000000, buffer_size, False, 10.0, '', True)
         self.digital_pfb_clock_sync_xxx_0 = digital.pfb_clock_sync_ccf(sps, 2*pi/200, pfb_filter, nfilts_pfb, int(nfilts_pfb/2), 0.5, 1)
         self.digital_packet_headerparser_b_0_0 = digital.packet_headerparser_b(header_formatter.formatter())
         self.digital_header_payload_demux_0 = digital.header_payload_demux(
@@ -292,12 +284,12 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.digital_diff_decoder_bb_0_0 = digital.diff_decoder_bb(2)
         self.digital_diff_decoder_bb_0 = digital.diff_decoder_bb(2)
         self.digital_costas_loop_cc_0 = digital.costas_loop_cc(2*pi/200, 2, False)
-        self.digital_corr_est_cc_0 = digital.corr_est_cc(pn6_padded, 1, 64, 0.7, digital.THRESHOLD_ABSOLUTE)
+        self.digital_corr_est_cc_0 = digital.corr_est_cc(pn6_padded, 1, 64, 0.8, digital.THRESHOLD_ABSOLUTE)
         self.digital_constellation_decoder_cb_0_0_0_0_0 = digital.constellation_decoder_cb(const)
         self.digital_constellation_decoder_cb_0_0_0_0 = digital.constellation_decoder_cb(const)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, np.sqrt(2)*np.sqrt(0.5 / np.power(10,snr_db/10)), 0)
-        self.analog_agc_xx_0 = analog.agc_cc(agc_rate, 1.0, 1.0)
+        self.analog_agc_xx_0 = analog.agc_cc(1e-4, 1.0, 1.0)
         self.analog_agc_xx_0.set_max_gain(65536)
 
 
@@ -322,14 +314,13 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.connect((self.digital_header_payload_demux_0, 1), (self.blocks_add_xx_0, 1))
         self.connect((self.digital_header_payload_demux_0, 0), (self.digital_constellation_decoder_cb_0_0_0_0, 0))
         self.connect((self.digital_pfb_clock_sync_xxx_0, 0), (self.digital_corr_est_cc_0, 0))
-        self.connect((self.iio_pluto_source_0, 0), (self.analog_agc_xx_0, 0))
-        self.connect((self.pulse_shape_hier_0, 0), (self.iio_pluto_sink_0, 0))
+        self.connect((self.pulse_shape_hier_0, 0), (self.analog_agc_xx_0, 0))
         self.connect((self.wes_ber_0, 0), (self.qtgui_number_sink_0, 0))
         self.connect((self.wes_ber_0, 1), (self.qtgui_number_sink_0_0, 0))
         self.connect((self.wes_packet_tx_0, 0), (self.pulse_shape_hier_0, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "lab3_ber")
+        self.settings = Qt.QSettings("GNU Radio", "lab3_ber_sim")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -459,8 +450,6 @@ class lab3_ber(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.iio_pluto_sink_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, 10.0, '', True)
-        self.iio_pluto_source_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, True, True, True, 'manual', 36, '', True)
         self.wes_packet_tx_0.set_samp_rate(self.samp_rate)
 
     def get_rrc_filter(self):
@@ -538,20 +527,12 @@ class lab3_ber(gr.top_block, Qt.QWidget):
 
     def set_fc(self, fc):
         self.fc = fc
-        self.iio_pluto_sink_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, 10.0, '', True)
-        self.iio_pluto_source_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, True, True, True, 'manual', 36, '', True)
 
     def get_const(self):
         return self.const
 
     def set_const(self, const):
         self.const = const
-
-    def get_buffer_size(self):
-        return self.buffer_size
-
-    def set_buffer_size(self, buffer_size):
-        self.buffer_size = buffer_size
 
     def get_bFilter(self):
         return self.bFilter
@@ -560,13 +541,6 @@ class lab3_ber(gr.top_block, Qt.QWidget):
         self.bFilter = bFilter
         self._bFilter_callback(self.bFilter)
         self.pulse_shape_hier_0.set_bFilter(self.bFilter)
-
-    def get_agc_rate(self):
-        return self.agc_rate
-
-    def set_agc_rate(self, agc_rate):
-        self.agc_rate = agc_rate
-        self.analog_agc_xx_0.set_rate(self.agc_rate)
 
 
 def argument_parser():
@@ -577,7 +551,7 @@ def argument_parser():
     return parser
 
 
-def main(top_block_cls=lab3_ber, options=None):
+def main(top_block_cls=lab3_ber_sim, options=None):
     if options is None:
         options = argument_parser().parse_args()
 
