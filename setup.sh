@@ -3,6 +3,7 @@
 # copy .hier file cache
 echo "Installing Hier Files..."
 
+mkdir ~/.grc_gnuradio
 cp -r hier_cache/* ~/.grc_gnuradio
 cd oot/gr-wes
 
