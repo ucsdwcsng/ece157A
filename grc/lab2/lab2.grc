@@ -99,6 +99,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '2'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -128,6 +129,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '2'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -343,7 +345,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '1000'
+    value: '1024'
   states:
     bus_sink: false
     bus_source: false
