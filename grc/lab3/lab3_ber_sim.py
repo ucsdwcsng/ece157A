@@ -40,7 +40,6 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 from pulse_shape_hier import pulse_shape_hier  # grc-generated hier_block
 from wes_packet_tx import wes_packet_tx  # grc-generated hier_block
-import epy_module_0  # embedded python module
 import numpy as np
 import pmt
 import wes
@@ -102,7 +101,7 @@ class lab3_ber_sim(gr.top_block, Qt.QWidget):
         self.tag0 = tag0 = gr.tag_utils.python_to_tag((0, pmt.intern(len_tag_key), pmt.from_long(cw_len), pmt.intern("vect_cw_src")))
         self.sync_seq = sync_seq = [1, 1, -1, 1, -1, 1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1]
         self.snr_db = snr_db = snr_default
-        self.samp_rate = samp_rate = 1e3
+        self.samp_rate = samp_rate = 1e4
         self.rrc_filter = rrc_filter = firdes.root_raised_cosine(4, sps, 1, rolloff_, 32*sps+1)
         self.reset_ber = reset_ber = 0
         self.pn_order = pn_order = np.round(np.log2(payload_len+1))
@@ -287,6 +286,7 @@ class lab3_ber_sim(gr.top_block, Qt.QWidget):
         self.digital_corr_est_cc_0 = digital.corr_est_cc(pn6_padded, 1, 64, 0.8, digital.THRESHOLD_ABSOLUTE)
         self.digital_constellation_decoder_cb_0_0_0_0_0 = digital.constellation_decoder_cb(const)
         self.digital_constellation_decoder_cb_0_0_0_0 = digital.constellation_decoder_cb(const)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate*sps*1000,True)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, np.sqrt(2)*np.sqrt(0.5 / np.power(10,snr_db/10)), 0)
         self.analog_agc_xx_0 = analog.agc_cc(1e-4, 1.0, 1.0)
@@ -301,8 +301,9 @@ class lab3_ber_sim(gr.top_block, Qt.QWidget):
         self.connect((self.analog_agc_xx_0, 0), (self.digital_costas_loop_cc_0, 0))
         self.connect((self.analog_noise_source_x_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.digital_constellation_decoder_cb_0_0_0_0_0, 0))
-        self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 1))
+        self.connect((self.blocks_add_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.analog_agc_xx_0, 0))
         self.connect((self.digital_constellation_decoder_cb_0_0_0_0, 0), (self.digital_diff_decoder_bb_0, 0))
         self.connect((self.digital_constellation_decoder_cb_0_0_0_0_0, 0), (self.digital_diff_decoder_bb_0_0, 0))
         self.connect((self.digital_corr_est_cc_0, 0), (self.digital_header_payload_demux_0, 0))
@@ -314,7 +315,7 @@ class lab3_ber_sim(gr.top_block, Qt.QWidget):
         self.connect((self.digital_header_payload_demux_0, 1), (self.blocks_add_xx_0, 1))
         self.connect((self.digital_header_payload_demux_0, 0), (self.digital_constellation_decoder_cb_0_0_0_0, 0))
         self.connect((self.digital_pfb_clock_sync_xxx_0, 0), (self.digital_corr_est_cc_0, 0))
-        self.connect((self.pulse_shape_hier_0, 0), (self.analog_agc_xx_0, 0))
+        self.connect((self.pulse_shape_hier_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.wes_ber_0, 0), (self.qtgui_number_sink_0, 0))
         self.connect((self.wes_ber_0, 1), (self.qtgui_number_sink_0_0, 0))
         self.connect((self.wes_packet_tx_0, 0), (self.pulse_shape_hier_0, 0))
@@ -345,6 +346,7 @@ class lab3_ber_sim(gr.top_block, Qt.QWidget):
         self.set_mark_delay(self.mark_delays[self.sps])
         self.set_pfb_filter(firdes.root_raised_cosine(self.nfilts_pfb, self.nfilts_pfb*self.sps, 1, self.rolloff_, self.nfilts_pfb*11*self.sps+1))
         self.set_rrc_filter(firdes.root_raised_cosine(4, self.sps, 1, self.rolloff_, 32*self.sps+1))
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate*self.sps*1000)
         self.pulse_shape_hier_0.set_sps(self.sps)
 
     def get_snr_default(self):
@@ -450,6 +452,7 @@ class lab3_ber_sim(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate*self.sps*1000)
         self.wes_packet_tx_0.set_samp_rate(self.samp_rate)
 
     def get_rrc_filter(self):

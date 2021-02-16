@@ -404,7 +404,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 218]
+    coordinate: [9, 274]
     rotation: 0
     state: true
 - name: analog_random_source_x_0_0
@@ -424,7 +424,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [9, 338]
+    coordinate: [13, 371]
     rotation: 0
     state: true
 - name: analog_sig_source_x_0
@@ -536,7 +536,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [948, 590]
+    coordinate: [851, 584]
     rotation: 0
     state: true
 - name: blocks_multiply_xx_0
@@ -571,7 +571,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [837, 711]
+    coordinate: [771, 523]
     rotation: 0
     state: true
 - name: blocks_selector_0_0
@@ -613,7 +613,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [746, 580]
+    coordinate: [748, 658]
     rotation: 0
     state: true
 - name: digital_chunks_to_symbols_xx_1
@@ -680,7 +680,7 @@ blocks:
     bus_structure: null
     coordinate: [13, 157]
     rotation: 0
-    state: true
+    state: disabled
 - name: iio_pluto_sink_0
   id: iio_pluto_sink
   parameters:
@@ -695,7 +695,7 @@ blocks:
     filter: ''
     frequency: int(freqc_*1e6)
     samplerate: int(samp_rate*1000)
-    uri: epy_module_0.TX
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
@@ -722,12 +722,12 @@ blocks:
     quadrature: 'True'
     rfdc: 'True'
     samplerate: int(samp_rate*1000)
-    uri: epy_module_0.RX
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [62, 457]
+    coordinate: [34, 523]
     rotation: 0
     state: true
 - name: import_1
@@ -968,7 +968,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1158, 574]
+    coordinate: [1062, 522]
     rotation: 0
     state: true
 - name: tab0

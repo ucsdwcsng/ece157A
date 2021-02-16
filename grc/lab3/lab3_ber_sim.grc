@@ -355,7 +355,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 1e3
+    value: 1e4
   states:
     bus_sink: false
     bus_source: false
@@ -543,6 +543,25 @@ blocks:
     coordinate: [120, 1100]
     rotation: 0
     state: disabled
+- name: blocks_throttle_0
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate*sps*1000
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [811, 383]
+    rotation: 0
+    state: true
 - name: corr_tag_delay
   id: parameter
   parameters:
@@ -747,31 +766,6 @@ blocks:
     coordinate: [775, 474]
     rotation: 0
     state: enabled
-- name: epy_module_0
-  id: epy_module
-  parameters:
-    alias: ''
-    comment: ''
-    source_code: "import sys\nimport os\n\n# run the command to generate usb.dat\n\
-      cmd1 = 'iio_info -s | grep \"usb\" | awk \\'{print $9}\\' | awk -F[ \\'{print\
-      \ $2}\\' | awk -F] \\'{print $1}\\' > usb.dat'\nos.system(cmd1)\n\n# open usb.dat\
-      \ and print its entries\nf = open('usb.dat','r')\n\nstrUSB = f.readlines() \
-      \                 # read all the lines from iio_info -s\nnum_devices = len(strUSB)-1\
-      \             # get the number of devices\n\n# clean-up\nf.close()         \
-      \                      # close file once we're done.\n\n# remove file\ncmd2\
-      \ = 'rm usb.dat'\nos.system(cmd2)\n\n\nif num_devices > 0:\n    strUSB = strUSB[1:]\n\
-      \n    for n in range(num_devices):\n        strUSB[n] = strUSB[n].rstrip() \
-      \ # strip the \"\\n\" chars out\n\n    TX = strUSB[0]\n    RX = strUSB[1]\n\n\
-      \    print('TX set to Pluto: ' + TX)\n    print('Rx set to Pluto: ' + RX)\n\
-      else:\n    print('No Devices Found!')\n\nprint('\\n')\n\n#print(strUSB)    \
-      \                       # debug print          \n"
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [11, 132]
-    rotation: 0
-    state: true
 - name: import_0
   id: import
   parameters:
@@ -1168,6 +1162,7 @@ connections:
 - [blocks_add_xx_0, '0', digital_constellation_decoder_cb_0_0_0_0_0, '0']
 - [blocks_add_xx_0, '0', qtgui_const_sink_x_0, '0']
 - [blocks_add_xx_0, '0', qtgui_const_sink_x_0, '1']
+- [blocks_throttle_0, '0', virtual_sink_3, '0']
 - [digital_constellation_decoder_cb_0_0_0_0, '0', digital_diff_decoder_bb_0, '0']
 - [digital_constellation_decoder_cb_0_0_0_0_0, '0', digital_diff_decoder_bb_0_0, '0']
 - [digital_corr_est_cc_0, '0', virtual_sink_0, '0']
@@ -1183,7 +1178,7 @@ connections:
 - [digital_packet_headerparser_b_0_0, header_data, digital_header_payload_demux_0,
   header_data]
 - [digital_pfb_clock_sync_xxx_0, '0', digital_corr_est_cc_0, '0']
-- [pulse_shape_hier_0, '0', virtual_sink_3, '0']
+- [pulse_shape_hier_0, '0', blocks_throttle_0, '0']
 - [virtual_source_0, '0', virtual_sink_2, '0']
 - [virtual_source_1, '0', wes_ber_0, '1']
 - [virtual_source_2, '0', digital_header_payload_demux_0, '0']

@@ -39,7 +39,6 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 from math import pi
-import epy_module_0  # embedded python module
 import iio
 import numpy as np
 import wes
@@ -325,8 +324,8 @@ class lab3(gr.top_block, Qt.QWidget):
         self.interp_fir_filter_xxx_1_0_0.declare_sample_delay(0)
         self.interp_fir_filter_xxx_1_0 = filter.interp_fir_filter_ccc(sps, (1,1,1,1,1,1,1,1))
         self.interp_fir_filter_xxx_1_0.declare_sample_delay(0)
-        self.iio_pluto_source_0 = iio.pluto_source(epy_module_0.RX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, True, True, True, 'manual', 32, '', True)
-        self.iio_pluto_sink_0 = iio.pluto_sink(epy_module_0.TX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, False, 10.0, '', True)
+        self.iio_pluto_source_0 = iio.pluto_source('', int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, True, True, True, 'manual', 32, '', True)
+        self.iio_pluto_sink_0 = iio.pluto_sink('', int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, False, 10.0, '', True)
         self.digital_chunks_to_symbols_xx_1_0 = digital.chunks_to_symbols_bc(const_qpsk.points(), 1)
         self.digital_chunks_to_symbols_xx_1 = digital.chunks_to_symbols_bc(const_bpsk.points(), 1)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)

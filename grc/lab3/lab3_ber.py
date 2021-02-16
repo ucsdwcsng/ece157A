@@ -40,7 +40,6 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 from pulse_shape_hier import pulse_shape_hier  # grc-generated hier_block
 from wes_packet_tx import wes_packet_tx  # grc-generated hier_block
-import epy_module_0  # embedded python module
 import iio
 import numpy as np
 import pmt
@@ -272,8 +271,8 @@ class lab3_ber(gr.top_block, Qt.QWidget):
             roll_off=rolloff_,
             sps=sps,
         )
-        self.iio_pluto_source_0 = iio.pluto_source(epy_module_0.RX, int(fc), int(samp_rate*1e3), 20000000, buffer_size, True, True, True, 'manual', 36, '', True)
-        self.iio_pluto_sink_0 = iio.pluto_sink(epy_module_0.TX, int(fc), int(samp_rate*1e3), 20000000, buffer_size, False, 10.0, '', True)
+        self.iio_pluto_source_0 = iio.pluto_source('', int(fc), int(samp_rate*1e3), 20000000, buffer_size, True, True, True, 'manual', 18, '', True)
+        self.iio_pluto_sink_0 = iio.pluto_sink('', int(fc), int(samp_rate*1e3), 20000000, buffer_size, False, 10.0, '', True)
         self.digital_pfb_clock_sync_xxx_0 = digital.pfb_clock_sync_ccf(sps, 2*pi/200, pfb_filter, nfilts_pfb, int(nfilts_pfb/2), 0.5, 1)
         self.digital_packet_headerparser_b_0_0 = digital.packet_headerparser_b(header_formatter.formatter())
         self.digital_header_payload_demux_0 = digital.header_payload_demux(
@@ -460,7 +459,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.iio_pluto_sink_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, 10.0, '', True)
-        self.iio_pluto_source_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, True, True, True, 'manual', 36, '', True)
+        self.iio_pluto_source_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, True, True, True, 'manual', 18, '', True)
         self.wes_packet_tx_0.set_samp_rate(self.samp_rate)
 
     def get_rrc_filter(self):
@@ -539,7 +538,7 @@ class lab3_ber(gr.top_block, Qt.QWidget):
     def set_fc(self, fc):
         self.fc = fc
         self.iio_pluto_sink_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, 10.0, '', True)
-        self.iio_pluto_source_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, True, True, True, 'manual', 36, '', True)
+        self.iio_pluto_source_0.set_params(int(self.fc), int(self.samp_rate*1e3), 20000000, True, True, True, 'manual', 18, '', True)
 
     def get_const(self):
         return self.const

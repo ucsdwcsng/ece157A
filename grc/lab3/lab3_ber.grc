@@ -780,31 +780,6 @@ blocks:
     coordinate: [775, 474]
     rotation: 0
     state: enabled
-- name: epy_module_0
-  id: epy_module
-  parameters:
-    alias: ''
-    comment: ''
-    source_code: "import sys\nimport os\n\n# run the command to generate usb.dat\n\
-      cmd1 = 'iio_info -s | grep \"usb\" | awk \\'{print $9}\\' | awk -F[ \\'{print\
-      \ $2}\\' | awk -F] \\'{print $1}\\' > usb.dat'\nos.system(cmd1)\n\n# open usb.dat\
-      \ and print its entries\nf = open('usb.dat','r')\n\nstrUSB = f.readlines() \
-      \                 # read all the lines from iio_info -s\nnum_devices = len(strUSB)-1\
-      \             # get the number of devices\n\n# clean-up\nf.close()         \
-      \                      # close file once we're done.\n\n# remove file\ncmd2\
-      \ = 'rm usb.dat'\nos.system(cmd2)\n\n\nif num_devices > 0:\n    strUSB = strUSB[1:]\n\
-      \n    for n in range(num_devices):\n        strUSB[n] = strUSB[n].rstrip() \
-      \ # strip the \"\\n\" chars out\n\n    TX = strUSB[0]\n    RX = strUSB[1]\n\n\
-      \    print('TX set to Pluto: ' + TX)\n    print('Rx set to Pluto: ' + RX)\n\
-      else:\n    print('No Devices Found!')\n\nprint('\\n')\n\n#print(strUSB)    \
-      \                       # debug print          \n"
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [11, 132]
-    rotation: 0
-    state: true
 - name: iio_pluto_sink_0
   id: iio_pluto_sink
   parameters:
@@ -819,7 +794,7 @@ blocks:
     filter: ''
     frequency: int(fc)
     samplerate: int(samp_rate*1e3)
-    uri: epy_module_0.TX
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
@@ -840,13 +815,13 @@ blocks:
     filter: ''
     frequency: int(fc)
     gain1: '''manual'''
-    manual_gain1: '36'
+    manual_gain1: '18'
     maxoutbuf: '0'
     minoutbuf: '0'
     quadrature: 'True'
     rfdc: 'True'
     samplerate: int(samp_rate*1e3)
-    uri: epy_module_0.RX
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
@@ -1104,6 +1079,35 @@ blocks:
     coordinate: [1717, 977]
     rotation: 0
     state: true
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"Clip Test"'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [158, 734]
+    rotation: 0
+    state: disabled
 - name: virtual_sink_0
   id: virtual_sink
   parameters:
@@ -1240,6 +1244,7 @@ connections:
   header_data]
 - [digital_pfb_clock_sync_xxx_0, '0', digital_corr_est_cc_0, '0']
 - [iio_pluto_source_0, '0', analog_agc_xx_0, '0']
+- [iio_pluto_source_0, '0', qtgui_sink_x_0, '0']
 - [pulse_shape_hier_0, '0', iio_pluto_sink_0, '0']
 - [virtual_source_0, '0', virtual_sink_2, '0']
 - [virtual_source_1, '0', wes_ber_0, '1']
