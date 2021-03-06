@@ -7,7 +7,7 @@
 # GNU Radio Python Flow Graph
 # Title: Lab 4
 # Author: wes
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.2.0
 
 from distutils.version import StrictVersion
 
@@ -39,9 +39,9 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 from math import pi
 from scipy import signal as sp
-import epy_module_0  # embedded python module
 import iio
 import numpy as np
+
 from gnuradio import qtgui
 
 class lab4(gr.top_block, Qt.QWidget):
@@ -315,8 +315,8 @@ class lab4(gr.top_block, Qt.QWidget):
         self.interp_fir_filter_xxx_1_0 = filter.interp_fir_filter_ccc(sps, (1,1,1,1))
         self.interp_fir_filter_xxx_1_0.declare_sample_delay(0)
         self.iir_filter_xxx_0 = filter.iir_filter_ccz([(1)], iir_taps, True)
-        self.iio_pluto_source_0 = iio.pluto_source(epy_module_0.RX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, True, True, True, 'manual', 32, '', True)
-        self.iio_pluto_sink_0 = iio.pluto_sink(epy_module_0.TX, int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, False, 10.0, '', True)
+        self.iio_pluto_source_0 = iio.pluto_source('', int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, True, True, True, 'manual', 32, '', True)
+        self.iio_pluto_sink_0 = iio.pluto_sink('', int(freqc_*1e6), int(samp_rate*1000), 20000000, buff_size, False, 10.0, '', True)
         self._echo_gain_iir_range = Range(0, 1, 0.01, 0, 200)
         self._echo_gain_iir_win = RangeWidget(self._echo_gain_iir_range, self.set_echo_gain_iir, 'Equalizer Gain (A)', "counter_slider", float)
         self.top_grid_layout.addWidget(self._echo_gain_iir_win, 14, 0, 1, 1)
@@ -388,6 +388,7 @@ class lab4(gr.top_block, Qt.QWidget):
         self.connect((self.iir_filter_xxx_0, 0), (self.blocks_selector_0_0, 1))
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.interp_fir_filter_xxx_1_0, 0), (self.blocks_delay_0, 0))
+
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "lab4")
@@ -595,6 +596,8 @@ class lab4(gr.top_block, Qt.QWidget):
 
 
 
+
+
 def main(top_block_cls=lab4, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -603,7 +606,9 @@ def main(top_block_cls=lab4, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -619,9 +624,9 @@ def main(top_block_cls=lab4, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

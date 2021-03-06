@@ -45,6 +45,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '2'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -266,6 +267,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '2'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -874,31 +876,6 @@ blocks:
     coordinate: [33, 252]
     rotation: 0
     state: true
-- name: epy_module_0
-  id: epy_module
-  parameters:
-    alias: ''
-    comment: ''
-    source_code: "import sys\nimport os\n\n# run the command to generate usb.dat\n\
-      cmd1 = 'iio_info -s | grep \"usb\" | awk \\'{print $9}\\' | awk -F[ \\'{print\
-      \ $2}\\' | awk -F] \\'{print $1}\\' > usb.dat'\nos.system(cmd1)\n\n# open usb.dat\
-      \ and print its entries\nf = open('usb.dat','r')\n\nstrUSB = f.readlines() \
-      \                 # read all the lines from iio_info -s\nnum_devices = len(strUSB)-1\
-      \             # get the number of devices\n\n# clean-up\nf.close()         \
-      \                      # close file once we're done.\n\n# remove file\ncmd2\
-      \ = 'rm usb.dat'\nos.system(cmd2)\n\n\nif num_devices > 0:\n    strUSB = strUSB[1:]\n\
-      \n    for n in range(num_devices):\n        strUSB[n] = strUSB[n].rstrip() \
-      \ # strip the \"\\n\" chars out\n\n    TX = strUSB[0]\n    RX = strUSB[1]\n\n\
-      \    print('TX set to Pluto: ' + TX)\n    print('Rx set to Pluto: ' + RX)\n\
-      else:\n    print('No Devices Found!')\n\nprint('\\n')\n\n#print(strUSB)    \
-      \                       # debug print          \n"
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [14, 188]
-    rotation: 0
-    state: true
 - name: iio_pluto_sink_0
   id: iio_pluto_sink
   parameters:
@@ -913,7 +890,7 @@ blocks:
     filter: ''
     frequency: int(freqc_*1e6)
     samplerate: int(samp_rate*1000)
-    uri: epy_module_0.TX
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
@@ -940,7 +917,7 @@ blocks:
     quadrature: 'True'
     rfdc: 'True'
     samplerate: int(samp_rate*1000)
-    uri: epy_module_0.RX
+    uri: ''
   states:
     bus_sink: false
     bus_source: false
