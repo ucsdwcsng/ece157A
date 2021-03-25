@@ -19,3 +19,9 @@ echo "Code Compilation Complete... "
 sudo ldconfig
 
 echo "Blocks Updated..."
+
+
+
+sudo apt install -y python3-pip jupyter-core jupyter-notebook
+pip3 install matplotlib scipy numpy 
+echo "Python Components Installed"
