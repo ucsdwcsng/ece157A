@@ -7,7 +7,7 @@
 # GNU Radio Python Flow Graph
 # Title: Pluto FFT
 # Description: Pluto FFT Waveform Plotter
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: v3.8.5.0-5-g982205bd
 
 from distutils.version import StrictVersion
 
@@ -34,11 +34,12 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio.qtgui import Range, RangeWidget
 import iio
 import numpy
+
 from gnuradio import qtgui
 
 class pluto_fft(gr.top_block, Qt.QWidget):
 
-    def __init__(self, fft_size=1024, freq=89.5, gain=32, samp_rate=1000, update_rate=.03):
+    def __init__(self, fft_size=1024, freq=89.5, gain=32, rf_bandwidth=20000, samp_rate=1000, update_rate=.03):
         gr.top_block.__init__(self, "Pluto FFT")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Pluto FFT")
@@ -75,6 +76,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
         self.fft_size = fft_size
         self.freq = freq
         self.gain = gain
+        self.rf_bandwidth = rf_bandwidth
         self.samp_rate = samp_rate
         self.update_rate = update_rate
 
@@ -82,6 +84,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.samp_rate_ = samp_rate_ = samp_rate
+        self.rf_bandwidth_ = rf_bandwidth_ = rf_bandwidth
         self.gain_ = gain_ = gain
         self.freq_c = freq_c = freq
 
@@ -89,15 +92,26 @@ class pluto_fft(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self._samp_rate__tool_bar = Qt.QToolBar(self)
-        self._samp_rate__tool_bar.addWidget(Qt.QLabel('Passband Bandwidth (kHz)' + ": "))
+        self._samp_rate__tool_bar.addWidget(Qt.QLabel('Sampler Rate (kHz)' + ": "))
         self._samp_rate__line_edit = Qt.QLineEdit(str(self.samp_rate_))
         self._samp_rate__tool_bar.addWidget(self._samp_rate__line_edit)
         self._samp_rate__line_edit.returnPressed.connect(
             lambda: self.set_samp_rate_(eng_notation.str_to_num(str(self._samp_rate__line_edit.text()))))
-        self.top_grid_layout.addWidget(self._samp_rate__tool_bar, 3, 2, 1, 2)
+        self.top_grid_layout.addWidget(self._samp_rate__tool_bar, 3, 2, 1, 1)
         for r in range(3, 4):
             self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(2, 4):
+        for c in range(2, 3):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        self._rf_bandwidth__tool_bar = Qt.QToolBar(self)
+        self._rf_bandwidth__tool_bar.addWidget(Qt.QLabel('Passband Bandwidth (kHz)' + ": "))
+        self._rf_bandwidth__line_edit = Qt.QLineEdit(str(self.rf_bandwidth_))
+        self._rf_bandwidth__tool_bar.addWidget(self._rf_bandwidth__line_edit)
+        self._rf_bandwidth__line_edit.returnPressed.connect(
+            lambda: self.set_rf_bandwidth_(eng_notation.str_to_num(str(self._rf_bandwidth__line_edit.text()))))
+        self.top_grid_layout.addWidget(self._rf_bandwidth__tool_bar, 3, 3, 1, 1)
+        for r in range(3, 4):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(3, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._gain__range = Range(0, 100, 1, gain, 200)
         self._gain__win = RangeWidget(self._gain__range, self.set_gain_, 'RX Gain', "counter_slider", float)
@@ -275,8 +289,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
             self.display_grid_layout_0.setRowStretch(r, 1)
         for c in range(0, 4):
             self.display_grid_layout_0.setColumnStretch(c, 1)
-        self.iio_pluto_source_0 = iio.pluto_source('', int(freq_c*1e6), int(samp_rate_*1000), 20000000, 32768, True, True, True, 'manual', gain_, '', True)
-
+        self.iio_pluto_source_0 = iio.pluto_source('', int(freq_c*1e6), int(samp_rate_*1000), int(rf_bandwidth_*1000), 32768, True, True, True, 'manual', gain_, '', True)
 
 
         ##################################################
@@ -285,6 +298,7 @@ class pluto_fft(gr.top_block, Qt.QWidget):
         self.connect((self.iio_pluto_source_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
+
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "pluto_fft")
@@ -313,6 +327,13 @@ class pluto_fft(gr.top_block, Qt.QWidget):
         self.gain = gain
         self.set_gain_(self.gain)
 
+    def get_rf_bandwidth(self):
+        return self.rf_bandwidth
+
+    def set_rf_bandwidth(self, rf_bandwidth):
+        self.rf_bandwidth = rf_bandwidth
+        self.set_rf_bandwidth_(self.rf_bandwidth)
+
     def get_samp_rate(self):
         return self.samp_rate
 
@@ -335,17 +356,25 @@ class pluto_fft(gr.top_block, Qt.QWidget):
     def set_samp_rate_(self, samp_rate_):
         self.samp_rate_ = samp_rate_
         Qt.QMetaObject.invokeMethod(self._samp_rate__line_edit, "setText", Qt.Q_ARG("QString", eng_notation.num_to_str(self.samp_rate_)))
-        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', self.gain_, '', True)
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), int(self.rf_bandwidth_*1000), True, True, True, 'manual', self.gain_, '', True)
         self.qtgui_freq_sink_x_0.set_frequency_range(self.freq, self.samp_rate_*1000)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate_*1000)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, self.samp_rate_*1000)
+
+    def get_rf_bandwidth_(self):
+        return self.rf_bandwidth_
+
+    def set_rf_bandwidth_(self, rf_bandwidth_):
+        self.rf_bandwidth_ = rf_bandwidth_
+        Qt.QMetaObject.invokeMethod(self._rf_bandwidth__line_edit, "setText", Qt.Q_ARG("QString", eng_notation.num_to_str(self.rf_bandwidth_)))
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), int(self.rf_bandwidth_*1000), True, True, True, 'manual', self.gain_, '', True)
 
     def get_gain_(self):
         return self.gain_
 
     def set_gain_(self, gain_):
         self.gain_ = gain_
-        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', self.gain_, '', True)
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), int(self.rf_bandwidth_*1000), True, True, True, 'manual', self.gain_, '', True)
 
     def get_freq_c(self):
         return self.freq_c
@@ -353,7 +382,9 @@ class pluto_fft(gr.top_block, Qt.QWidget):
     def set_freq_c(self, freq_c):
         self.freq_c = freq_c
         Qt.QMetaObject.invokeMethod(self._freq_c_line_edit, "setText", Qt.Q_ARG("QString", eng_notation.num_to_str(self.freq_c)))
-        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), 20000000, True, True, True, 'manual', self.gain_, '', True)
+        self.iio_pluto_source_0.set_params(int(self.freq_c*1e6), int(self.samp_rate_*1000), int(self.rf_bandwidth_*1000), True, True, True, 'manual', self.gain_, '', True)
+
+
 
 
 def argument_parser():
@@ -368,6 +399,9 @@ def argument_parser():
     parser.add_argument(
         "-g", "--gain", dest="gain", type=eng_float, default="32.0",
         help="Set Set gain in dB (default is midpoint) [default=%(default)r]")
+    parser.add_argument(
+        "-r", "--rf-bandwidth", dest="rf_bandwidth", type=eng_float, default="20.0k",
+        help="Set RF Bandwidth [default=%(default)r]")
     parser.add_argument(
         "-s", "--samp-rate", dest="samp_rate", type=eng_float, default="1.0k",
         help="Set Sample Rate [default=%(default)r]")
@@ -386,8 +420,10 @@ def main(top_block_cls=pluto_fft, options=None):
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls(fft_size=options.fft_size, freq=options.freq, gain=options.gain, samp_rate=options.samp_rate, update_rate=options.update_rate)
+    tb = top_block_cls(fft_size=options.fft_size, freq=options.freq, gain=options.gain, rf_bandwidth=options.rf_bandwidth, samp_rate=options.samp_rate, update_rate=options.update_rate)
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -403,9 +439,9 @@ def main(top_block_cls=pluto_fft, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

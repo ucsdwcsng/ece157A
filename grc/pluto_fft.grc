@@ -68,12 +68,27 @@ blocks:
     coordinate: [983, 3]
     rotation: 0
     state: enabled
+- name: rf_bandwidth_
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 3,3,1,1
+    label: Passband Bandwidth (kHz)
+    type: real
+    value: rf_bandwidth
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1112, 276.0]
+    rotation: 0
+    state: enabled
 - name: samp_rate_
   id: variable_qtgui_entry
   parameters:
     comment: ''
-    gui_hint: 3,2,1,2
-    label: Passband Bandwidth (kHz)
+    gui_hint: 3,2,1,1
+    label: Sampler Rate (kHz)
     type: real
     value: samp_rate
   states:
@@ -174,7 +189,7 @@ blocks:
     affinity: ''
     alias: ''
     auto_filter: 'True'
-    bandwidth: '20000000'
+    bandwidth: int(rf_bandwidth_*1000)
     bbdc: 'True'
     buffer_size: '32768'
     comment: ''
@@ -444,6 +459,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [496, 343]
+    rotation: 0
+    state: enabled
+- name: rf_bandwidth
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: RF Bandwidth
+    short_id: r
+    type: eng_float
+    value: '20000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [216, -4.0]
     rotation: 0
     state: enabled
 - name: samp_rate
