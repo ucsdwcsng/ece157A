@@ -1,7 +1,6 @@
 options:
   parameters:
     author: wcsng
-    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -49,10 +48,10 @@ blocks:
   id: variable_qtgui_range
   parameters:
     comment: ''
-    gui_hint: ''
+    gui_hint: 1,0,1,1
     label: ''
     min_len: '200'
-    orient: QtCore.Qt.Horizontal
+    orient: Qt.Horizontal
     rangeType: float
     start: '0'
     step: '1'
@@ -63,17 +62,17 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 556.0]
+    coordinate: [283, 530]
     rotation: 0
     state: enabled
 - name: delay_gain
   id: variable_qtgui_range
   parameters:
     comment: ''
-    gui_hint: ''
+    gui_hint: 2,0,1,1
     label: ''
     min_len: '200'
-    orient: QtCore.Qt.Horizontal
+    orient: Qt.Horizontal
     rangeType: float
     start: '0'
     step: '0.01'
@@ -84,7 +83,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [464, 548.0]
+    coordinate: [464, 546]
     rotation: 0
     state: enabled
 - name: excess_bw
@@ -191,23 +190,6 @@ blocks:
     coordinate: [696, 108.0]
     rotation: 0
     state: enabled
-- name: variable_adaptive_algorithm_0
-  id: variable_adaptive_algorithm
-  parameters:
-    comment: ''
-    cons: qpsk
-    delta: '10.0'
-    ffactor: '0.99'
-    modulus: '4'
-    step_size: '.0001'
-    type: cma
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1160, 84.0]
-    rotation: 0
-    state: true
 - name: analog_random_source_x_0
   id: analog_random_source_x
   parameters:
@@ -256,7 +238,6 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     num_ports: '1'
-    showports: 'False'
     type: complex
     vlen: '1'
   states:
@@ -303,6 +284,25 @@ blocks:
     coordinate: [560, 220.0]
     rotation: 0
     state: enabled
+- name: digital_cma_equalizer_cc_0
+  id: digital_cma_equalizer_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    modulus: '4'
+    mu: '0.0001'
+    num_taps: '15'
+    sps: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1192, 450]
+    rotation: 0
+    state: true
 - name: digital_constellation_modulator_0
   id: digital_constellation_modulator
   parameters:
@@ -316,34 +316,12 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samples_per_symbol: sps
-    truncate: 'False'
     verbose: 'False'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [344, 212.0]
-    rotation: 0
-    state: enabled
-- name: digital_linear_equalizer_0
-  id: digital_linear_equalizer
-  parameters:
-    adapt_after_training: 'True'
-    affinity: ''
-    alg: variable_adaptive_algorithm_0
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_taps: '15'
-    sps: '2'
-    training_sequence: '[ ]'
-    training_start_tag: corr_est
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1224, 384.0]
     rotation: 0
     state: enabled
 - name: digital_pfb_clock_sync_xxx_0
@@ -421,7 +399,6 @@ blocks:
     minoutbuf: '0'
     name: Before Equalization
     nconnections: '1'
-    norm_window: 'False'
     showports: 'True'
     tr_chan: '0'
     tr_level: '0.0'
@@ -440,7 +417,7 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    wintype: window.WIN_BLACKMAN_hARRIS
+    wintype: firdes.WIN_BLACKMAN_hARRIS
     ymax: '10'
     ymin: '-140'
   states:
@@ -502,7 +479,6 @@ blocks:
     minoutbuf: '0'
     name: After Equalization
     nconnections: '1'
-    norm_window: 'False'
     showports: 'True'
     tr_chan: '0'
     tr_level: '0.0'
@@ -521,7 +497,7 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    wintype: window.WIN_BLACKMAN_hARRIS
+    wintype: firdes.WIN_BLACKMAN_hARRIS
     ymax: '10'
     ymin: '-140'
   states:
@@ -539,11 +515,10 @@ connections:
 - [blocks_multiply_const_vxx_0, '0', blocks_add_xx_0, '1']
 - [blocks_throttle_0, '0', blocks_add_xx_0, '0']
 - [blocks_throttle_0, '0', blocks_delay_0, '0']
+- [digital_cma_equalizer_cc_0, '0', qtgui_freq_sink_x_0_0, '0']
 - [digital_constellation_modulator_0, '0', blocks_throttle_0, '0']
-- [digital_linear_equalizer_0, '0', qtgui_freq_sink_x_0_0, '0']
-- [digital_pfb_clock_sync_xxx_0, '0', digital_linear_equalizer_0, '0']
+- [digital_pfb_clock_sync_xxx_0, '0', digital_cma_equalizer_cc_0, '0']
 - [digital_pfb_clock_sync_xxx_0, '0', qtgui_freq_sink_x_0, '0']
 
 metadata:
   file_format: 1
-  grc_version: v3.11.0.0git-757-g9d77ad17

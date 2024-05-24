@@ -6,9 +6,9 @@
 #
 # GNU Radio Python Flow Graph
 # Title: OFDM TX
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.8.1.0
 
-from packaging.version import Version as StrictVersion
+from distutils.version import StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -28,22 +28,18 @@ from gnuradio import blocks
 import pmt
 from gnuradio import digital
 from gnuradio import gr
-from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import iio
-
-
-
+import iio
 from gnuradio import qtgui
 
 class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "OFDM TX", catch_exceptions=True)
+        gr.top_block.__init__(self, "OFDM TX")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("OFDM TX")
         qtgui.util.check_set_qss()
@@ -78,7 +74,7 @@ class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
         ##################################################
         self.sync_word2 = sync_word2 = [0, 0, 0, 0, 0, 0, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 0, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 0, 0, 0, 0, 0]
         self.sync_word1 = sync_word1 = [0., 0., 0., 0., 0., 0., 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 0., 0., 0., 0., 0.]
-        self.samp_rate = samp_rate = 65150
+        self.samp_rate = samp_rate = 600000
         self.pilot_symbols = pilot_symbols = ((1, 1, 1, -1,),)
         self.pilot_carriers = pilot_carriers = ((-21, -7, 7, 21,),)
         self.packet_len = packet_len = 50
@@ -91,29 +87,22 @@ class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
         ##################################################
         self.qtgui_sink_x_0 = qtgui.sink_c(
             2048, #fftsize
-            window.WIN_BLACKMAN_hARRIS, #wintype
+            firdes.WIN_RECTANGULAR, #wintype
             0, #fc
             samp_rate, #bw
             "", #name
             True, #plotfreq
             True, #plotwaterfall
             True, #plottime
-            True, #plotconst
-            None # parent
+            True #plotconst
         )
         self.qtgui_sink_x_0.set_update_time(1.0/10)
-        self._qtgui_sink_x_0_win = sip.wrapinstance(self.qtgui_sink_x_0.qwidget(), Qt.QWidget)
+        self._qtgui_sink_x_0_win = sip.wrapinstance(self.qtgui_sink_x_0.pyqwidget(), Qt.QWidget)
 
         self.qtgui_sink_x_0.enable_rf_freq(False)
 
-        self.top_layout.addWidget(self._qtgui_sink_x_0_win)
-        self.iio_pluto_sink_0 = iio.fmcomms2_sink_fc32('' if '' else iio.get_pluto_uri(), [True, True], 32768, False)
-        self.iio_pluto_sink_0.set_len_tag_key('')
-        self.iio_pluto_sink_0.set_bandwidth(200000)
-        self.iio_pluto_sink_0.set_frequency(3000000000)
-        self.iio_pluto_sink_0.set_samplerate(samp_rate)
-        self.iio_pluto_sink_0.set_attenuation(0, 10.0)
-        self.iio_pluto_sink_0.set_filter_params('Auto', '', 0, 0)
+        self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
+        self.iio_pluto_sink_0 = iio.pluto_sink('', 3000000000, samp_rate, 200000, 32768, False, 10.0, '', True)
         self.digital_ofdm_tx_0 = digital.ofdm_tx(
             fft_len=fft_len,
             cp_len=fft_len//4,
@@ -130,8 +119,9 @@ class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
             scramble_bits=False)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, packet_len, len_tag_key)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/wcsng-28/Downloads/.tx_file.txt', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/wes/ece157A/grc/lab5/.tx_file.txt', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+
 
 
         ##################################################
@@ -143,13 +133,9 @@ class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_throttle_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.digital_ofdm_tx_0, 0), (self.blocks_throttle_0, 0))
 
-
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "lab5_ofdm_tx")
         self.settings.setValue("geometry", self.saveGeometry())
-        self.stop()
-        self.wait()
-
         event.accept()
 
     def get_sync_word2(self):
@@ -170,7 +156,7 @@ class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
-        self.iio_pluto_sink_0.set_samplerate(self.samp_rate)
+        self.iio_pluto_sink_0.set_params(3000000000, self.samp_rate, 200000, 10.0, '', True)
         self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
 
     def get_pilot_symbols(self):
@@ -213,7 +199,6 @@ class lab5_ofdm_tx(gr.top_block, Qt.QWidget):
 
 
 
-
 def main(top_block_cls=lab5_ofdm_tx, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -222,15 +207,10 @@ def main(top_block_cls=lab5_ofdm_tx, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
-
     tb.start()
-
     tb.show()
 
     def sig_handler(sig=None, frame=None):
-        tb.stop()
-        tb.wait()
-
         Qt.QApplication.quit()
 
     signal.signal(signal.SIGINT, sig_handler)
@@ -240,7 +220,12 @@ def main(top_block_cls=lab5_ofdm_tx, options=None):
     timer.start(500)
     timer.timeout.connect(lambda: None)
 
+    def quitting():
+        tb.stop()
+        tb.wait()
+    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
+
 
 if __name__ == '__main__':
     main()

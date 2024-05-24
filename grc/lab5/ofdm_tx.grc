@@ -1,7 +1,6 @@
 options:
   parameters:
     author: ''
-    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -28,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [158, 30]
     rotation: 0
     state: enabled
 
@@ -42,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [472, 44.0]
+    coordinate: [622, 66]
     rotation: 0
     state: enabled
 - name: len_tag_key
@@ -54,7 +53,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [344, 44.0]
+    coordinate: [494, 66]
     rotation: 0
     state: enabled
 - name: occupied_carriers
@@ -70,18 +69,6 @@ blocks:
     coordinate: [920, 44.0]
     rotation: 0
     state: enabled
-- name: occupied_carriers
-  id: variable
-  parameters:
-    comment: ''
-    value: (list(range(1, 7)) + list(range(8, 21)) + list(range(22, 27)),)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [488, 256.0]
-    rotation: 0
-    state: disabled
 - name: packet_len
   id: variable
   parameters:
@@ -91,7 +78,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [264, 44.0]
+    coordinate: [414, 66]
     rotation: 0
     state: enabled
 - name: pilot_carriers
@@ -122,12 +109,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '65150'
+    value: '600000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 44.0]
+    coordinate: [710, 131]
     rotation: 0
     state: enabled
 - name: sync_word1
@@ -168,7 +155,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/wcsng-28/Downloads/.tx_file.txt
+    file: /home/wes/ece157A/grc/lab5/.tx_file.txt
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -180,7 +167,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [24, 228.0]
+    coordinate: [92, 316]
     rotation: 0
     state: enabled
 - name: blocks_stream_to_tagged_stream_0
@@ -199,7 +186,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 164.0]
+    coordinate: [478, 186]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0
@@ -246,7 +233,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [632, 108.0]
+    coordinate: [728, 456]
     rotation: 0
     state: enabled
 - name: iio_pluto_sink_0
@@ -255,18 +242,14 @@ blocks:
     affinity: ''
     alias: ''
     attenuation1: '10.0'
+    auto_filter: 'True'
     bandwidth: '200000'
     buffer_size: '32768'
     comment: ''
     cyclic: 'False'
     filter: ''
-    filter_source: '''Auto'''
-    fpass: '0'
     frequency: '3000000000'
-    fstop: '0'
-    len_tag_key: ''
     samplerate: samp_rate
-    type: fc32
     uri: ''
   states:
     bus_sink: false
@@ -296,7 +279,7 @@ blocks:
     showports: 'False'
     showrf: 'False'
     type: complex
-    wintype: window.WIN_BLACKMAN_hARRIS
+    wintype: firdes.WIN_RECTANGULAR
   states:
     bus_sink: false
     bus_source: false
