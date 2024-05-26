@@ -170,6 +170,24 @@ blocks:
     coordinate: [92, 316]
     rotation: 0
     state: enabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '0.025'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [952, 484.0]
+    rotation: 0
+    state: enabled
 - name: blocks_stream_to_tagged_stream_0
   id: blocks_stream_to_tagged_stream
   parameters:
@@ -205,7 +223,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 292.0]
+    coordinate: [976, 284.0]
     rotation: 0
     state: enabled
 - name: digital_ofdm_tx_0
@@ -284,16 +302,18 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1168, 476.0]
+    coordinate: [1288, 468.0]
     rotation: 0
     state: true
 
 connections:
 - [blocks_file_source_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_throttle_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', digital_ofdm_tx_0, '0']
 - [blocks_throttle_0, '0', iio_pluto_sink_0, '0']
 - [blocks_throttle_0, '0', qtgui_sink_x_0, '0']
-- [digital_ofdm_tx_0, '0', blocks_throttle_0, '0']
+- [digital_ofdm_tx_0, '0', blocks_multiply_const_vxx_0, '0']
 
 metadata:
   file_format: 1
+  grc_version: v3.11.0.0git-757-g9d77ad17
